@@ -1,221 +1,686 @@
+KDMA
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Sapphire - Order Control Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Hotel Sapphire - Counter Billing & Control Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #030712; }
-        .luxury-heading { font-family: 'Cinzel', serif; }
-        
-        /* Printer Thermal Format Media Optimization Rules */
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0d0e12;
+            color: #e2e8f0;
+        }
+        .serif-font {
+            font-family: 'Cinzel', serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        /* PRINT SPECIFIC STYLES FOR THE INVOICE RECEIPT */
         @media print {
-            body * { visibility: hidden; }
-            #printable-receipt, #printable-receipt * { visibility: visible; }
-            #printable-receipt { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; background: #fff !important; }
-            .no-print { display: none !important; }
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 76mm; /* Standard receipt width */
+                font-family: monospace;
+                color: #000;
+                background-color: #fff;
+                padding: 4mm;
+                font-size: 11px;
+                line-height: 1.2;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        /* Thermal Receipt Simulation on UI */
+        .receipt-preview {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #fcfcf9;
+            color: #111;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.05), 0 10px 25px -5px rgba(0,0,0,0.3);
+            border-top: 4px dashed #999;
+            border-bottom: 4px dashed #999;
         }
     </style>
 </head>
-<body class="text-slate-100 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <header class="bg-slate-950 border-b border-slate-800 p-4 no-print flex justify-between items-center">
-        <h1 class="luxury-heading text-sm text-amber-400 tracking-wider">Hotel Sapphire Counter Control</h1>
-        <a href="https://karan-digital-menu-agency.vercel.app/#contact" target="_blank" class="text-[11px] text-gray-500 font-mono hover:text-amber-400">
-            Karan Digital Menu Agency v1.0
+    <!-- Top Agency Branding Navigation -->
+    <header class="bg-gray-900 border-b border-yellow-600/30 py-3 px-6 flex justify-between items-center z-10 shadow-lg">
+        <div class="flex items-center space-x-3">
+            <span class="text-yellow-500 text-2xl"><i class="fa-solid fa-desktop animate-pulse"></i></span>
+            <div>
+                <h1 class="serif-font text-white font-bold tracking-wider text-base md:text-lg">SAPPHIRE COUNTER DASHBOARD</h1>
+                <p class="text-[10px] text-gray-400">Hotel Sapphire Yamunanagar Control Panel</p>
+            </div>
+        </div>
+        <a href="https://karan-digital-menu-agency.vercel.app/#contact" target="_blank" class="text-xs tracking-wider font-semibold text-yellow-500 hover:text-white transition border border-yellow-500/50 px-3 py-1.5 rounded bg-gray-800">
+            Created By. KARAN DIGITAL MENU AGENCY <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
         </a>
     </header>
 
-    <main class="flex-1 p-4 md:p-6 no-print">
-        <div class="max-w-6xl mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-xl font-bold tracking-wide">Live Orders Stream</h2>
-                    <p class="text-xs text-gray-400 mt-0.5">Listening live to customer table requests via Supabase API...</p>
+    <!-- MAIN DASHBOARD SPLIT GRID -->
+    <main class="flex-grow p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start h-[calc(100vh-120px)] overflow-y-auto">
+        
+        <!-- COLUMN 1: LIVE INCOMING ORDERS LIST (Left 5 Cols) -->
+        <section class="lg:col-span-5 bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex flex-col h-[580px]">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-red-500 animate-ping"></span>
+                    <h2 class="serif-font text-yellow-500 font-bold tracking-wide text-sm md:text-base">LIVE ORDERS RECEIVER</h2>
                 </div>
-                <button onclick="fetchIncomingOrders()" class="bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs px-4 py-2 rounded-lg font-medium transition-all">
-                    🔄 Forces Refresh
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="syncAllData()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-2.5 py-1 rounded flex items-center space-x-1 border border-gray-700 transition">
+                        <i class="fa-solid fa-rotate"></i> <span>Sync</span>
+                    </button>
+                    <span id="order-badge" class="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">0 Pending</span>
+                </div>
             </div>
 
-            <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <p class="text-sm text-slate-500 col-span-full py-12 text-center">Awaiting data entry pipelines or sync hooks...</p>
+            <!-- Scrollable orders tray -->
+            <div id="live-orders-container" class="flex-grow overflow-y-auto space-y-3 pr-1">
+                <!-- Orders loaded dynamically or simulated fallbacks inside JavaScript -->
+                <div class="text-center text-gray-500 text-xs py-16">
+                    <i class="fa-solid fa-hourglass text-3xl mb-3 text-gray-700 animate-spin"></i>
+                    <p>Connecting to kitchen pipeline & polling orders...</p>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <!-- COLUMN 2: BILL GENERATOR & THERMAL PREVIEW (Middle 4 Cols) -->
+        <section class="lg:col-span-4 bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex flex-col h-[580px]">
+            <h2 class="serif-font text-yellow-500 font-bold tracking-wide text-sm md:text-base border-b border-gray-800 pb-3 mb-3">
+                <i class="fa-solid fa-file-invoice-dollar mr-1"></i> ACTIVE BILL RECEIPT
+            </h2>
+
+            <!-- Real-time Thermal Receipt Preview -->
+            <div id="thermal-receipt-box" class="flex-grow overflow-y-auto p-4 rounded-lg receipt-preview mb-3 relative text-[11px]">
+                <div id="print-area">
+                    <div class="text-center font-bold mb-2">
+                        <h3 class="text-sm font-black tracking-widest uppercase">*** HOTEL SAPPHIRE ***</h3>
+                        <p class="font-normal text-[10px]">Yamunanagar, Haryana</p>
+                        <p class="font-normal text-[10px]">GSTIN: 06AABCH8834M1Z5</p>
+                        <p class="font-normal text-[10px] mt-1">Ph: +91 98765 43210</p>
+                        <div class="my-2 border-b border-dashed border-gray-800"></div>
+                    </div>
+                    <div class="space-y-1 mb-2 font-mono">
+                        <div class="flex justify-between">
+                            <span>BILL: #<span id="rec-id">TEMP_BILL</span></span>
+                            <span>DATE: <span id="rec-date">--/--/----</span></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-bold text-[12px]">PLACE: <span id="rec-table">T-X</span></span>
+                            <span>STAFF: ADMIN</span>
+                        </div>
+                    </div>
+                    <div class="border-b border-dashed border-gray-800 my-2"></div>
+                    
+                    <!-- Table Header -->
+                    <div class="grid grid-cols-12 font-bold font-mono mb-1">
+                        <span class="col-span-6">ITEM</span>
+                        <span class="col-span-2 text-center">QTY</span>
+                        <span class="col-span-2 text-right">RATE</span>
+                        <span class="col-span-2 text-right">TOTAL</span>
+                    </div>
+                    <div class="border-b border-dashed border-gray-800 my-1"></div>
+
+                    <!-- Receipt items loaded -->
+                    <div id="rec-items-box" class="space-y-1 font-mono">
+                        <div class="text-center italic text-gray-500 py-6">No receipt selected. Click 'View Bill' on any live order card.</div>
+                    </div>
+
+                    <div class="border-b border-dashed border-gray-800 my-2"></div>
+
+                    <!-- Totals and Taxes Breakdown -->
+                    <div class="space-y-1 font-mono text-[11px]">
+                        <div class="flex justify-between">
+                            <span>SUBTOTAL:</span>
+                            <span id="rec-subtotal">₹ 0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>SGST (5.0%):</span>
+                            <span id="rec-sgst">₹ 0.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>CGST (5.0%):</span>
+                            <span id="rec-cgst">₹ 0.00</span>
+                        </div>
+                        <div class="border-b border-dashed border-gray-800 my-1"></div>
+                        <div class="flex justify-between font-bold text-[12px]">
+                            <span>GRAND TOTAL:</span>
+                            <span id="rec-grand">₹ 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="border-b border-dashed border-gray-800 my-2"></div>
+                    <div class="text-center font-bold tracking-widest font-mono text-[10px] mt-2">
+                        <p>*** THANK YOU FOR VISIT ***</p>
+                        <p class="font-normal text-[9px] mt-1 text-gray-600">Sapphire Digital Agency</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="printBill()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-3 rounded-lg tracking-widest text-sm flex items-center justify-center space-x-2 transition duration-300">
+                <i class="fa-solid fa-print"></i>
+                <span>PRINT RECEIPT (window.print)</span>
+            </button>
+        </section>
+
+        <!-- COLUMN 3: DATABASE MANAGER & MENU CONTROL (Right 3 Cols) -->
+        <section class="lg:col-span-3 bg-gray-900/80 border border-gray-800 rounded-xl p-4 flex flex-col h-[580px]">
+            <h2 class="serif-font text-yellow-500 font-bold tracking-wide text-sm md:text-base border-b border-gray-800 pb-3 mb-3 flex justify-between items-center">
+                <span><i class="fa-solid fa-utensils mr-1"></i> MENU MANAGER</span>
+                <span class="text-[9px] bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-2 py-0.5 rounded">SUPABASE</span>
+            </h2>
+
+            <!-- Database schema notice -->
+            <div id="schema-help" class="bg-yellow-500/10 border border-yellow-500/20 p-2 rounded-lg text-[10px] mb-3 leading-relaxed text-yellow-400">
+                <span class="font-semibold block mb-0.5"><i class="fa-solid fa-circle-info"></i> DATABASE NOTICE</span>
+                Make sure tables <code class="bg-black px-1 rounded text-red-400 font-mono">menu_items</code> & <code class="bg-black px-1 rounded text-red-400 font-mono">orders</code> exist inside your Supabase! Toggle items below to control prices.
+            </div>
+
+            <!-- Form to Add Food Item -->
+            <form id="food-form" onsubmit="addOrUpdateFoodItem(event)" class="space-y-2 text-xs border-b border-gray-800 pb-3 mb-3">
+                <span class="font-bold text-gray-300 block mb-1">Add/Edit Food Delicacy</span>
+                <input type="text" id="food-name" placeholder="Delicacy Name (e.g. Paneer Tikka)" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 focus:outline-none focus:border-yellow-500 text-white">
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="food-price" placeholder="Price (₹)" required class="w-full bg-gray-800 border border-gray-700 rounded p-2 focus:outline-none focus:border-yellow-500 text-white">
+                    <select id="food-category" class="w-full bg-gray-800 border border-gray-700 rounded p-2 focus:outline-none focus:border-yellow-500 text-white">
+                        <option value="Starters">Starters</option>
+                        <option value="Main Course">Main Course</option>
+                        <option value="Breads">Breads & Rice</option>
+                        <option value="Desserts">Desserts</option>
+                        <option value="Drinks">Beverages</option>
+                    </select>
+                </div>
+                
+                <input type="text" id="food-description" placeholder="Short appetizing recipe description..." class="w-full bg-gray-800 border border-gray-700 rounded p-2 focus:outline-none focus:border-yellow-500 text-white">
+                <button type="submit" class="w-full bg-yellow-500/20 border border-yellow-500/40 text-yellow-500 hover:bg-yellow-500 hover:text-black font-semibold py-2 rounded transition text-xs">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> SAVE ITEM TO DATABASE
+                </button>
+            </form>
+
+            <!-- Interactive Food Stock List -->
+            <div class="flex-grow overflow-y-auto space-y-2 pr-1 custom-scroll" id="admin-items-list">
+                <div class="text-center py-10 text-gray-500 text-xs">Fetching items...</div>
+            </div>
+        </section>
+
     </main>
 
-    <div id="printable-receipt" class="hidden p-4 font-mono text-xs bg-white text-black max-w-[80mm] mx-auto">
-        </div>
+    <!-- FLOATING TOAST POPUP (Toast messages, preventing screen alerts) -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-gray-900 border border-yellow-500 px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2 text-xs md:text-sm text-yellow-500 transform translate-y-[-150%] transition-transform duration-300 max-w-[90%] pointer-events-none">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Connected and live synced!</span>
+    </div>
+
+    <!-- AUDIO DING GENERATOR (Alert sound on incoming kitchen orders) -->
+    <footer class="bg-gray-950 border-t border-gray-900 py-3 px-6 text-center text-xs text-gray-500 h-[50px] flex justify-between items-center">
+        <span>Hotel Sapphire © 2026</span>
+        <button onclick="toggleSound()" class="text-yellow-500 hover:text-yellow-400 bg-gray-900 px-3 py-1 rounded border border-yellow-500/20 text-[10px]">
+            <i id="sound-icon" class="fa-solid fa-bell"></i> Counter Audio Alert (ON)
+        </button>
+        <a href="https://www.google.com/search?q=Hotel+sapphire+yamunanagar+reviews" target="_blank" class="text-yellow-500/70 hover:text-white transition">Google reviews review search link</a>
+    </footer>
 
     <script>
-        const SUPABASE_GET_URL = "https://kvzmmqzyspplqmxetdir.supabase.co/rest/v1/orders?order=created_at.desc";
-        const SUPABASE_PATCH_BASE = "https://kvzmmqzyspplqmxetdir.supabase.co/rest/v1/orders";
+        // --- SUPABASE CONFIG ---
+        const SUPABASE_URL = "https://kvzmmqzyspplqmxetdir.supabase.co/rest/v1/";
         const SUPABASE_KEY = "sb_publishable_zI3NcmwRAjXgUg-dStSerA_cusoGsKf";
 
-        let fetchedOrders = [];
+        let orders = [];
+        let menuItems = [];
+        let selectedOrder = null;
+        let isSoundEnabled = true;
 
-        // Fetch Orders Payload Function via API Channels
-        async function fetchIncomingOrders() {
+        // Play high pitch procedural kitchen alert ding sound on new orders (using Audio Context API)
+        function playOrderAlertSound() {
+            if (!isSoundEnabled) return;
             try {
-                const response = await fetch(SUPABASE_GET_URL, {
-                    method: 'GET',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 
-                if (!response.ok) throw new Error("Network status invalid");
-                fetchedOrders = await response.json();
-                renderControlGrid();
-            } catch (err) {
-                console.error("Pipeline failure: ", err);
+                // Pure retro digital double beep synthesizer
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(1046.50, ctx.currentTime); // C6 pitch
+                osc1.frequency.setValueAtTime(1318.51, ctx.currentTime + 0.1); // E6 pitch
+
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+
+                osc1.connect(gain);
+                gain.connect(ctx.destination);
+                osc1.start();
+                osc1.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                console.log("Audio not played yet: ", e);
             }
         }
 
-        // Render Dashboard UI
-        function renderControlGrid() {
-            const container = document.getElementById('orders-grid');
-            if (fetchedOrders.length === 0) {
-                container.innerHTML = `<p class="text-sm text-slate-500 col-span-full py-12 text-center">No recent orders placed via live database.</p>`;
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const btn = document.getElementById("sound-icon");
+            if (isSoundEnabled) {
+                btn.className = "fa-solid fa-bell";
+                showToast("Order Alert Beeps ON");
+                playOrderAlertSound();
+            } else {
+                btn.className = "fa-solid fa-bell-slash";
+                showToast("Order Alert Beeps MUTED");
+            }
+        }
+
+        // --- FETCHING LATEST DATA ---
+        async function syncAllData() {
+            await fetchMenuItems();
+            await fetchOrders();
+        }
+
+        async function fetchMenuItems() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}menu_items?select=*`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    menuItems = await response.json();
+                    renderMenuItems();
+                } else {
+                    useFallbackMenu();
+                }
+            } catch (e) {
+                useFallbackMenu();
+            }
+        }
+
+        function useFallbackMenu() {
+            console.log("Supabase table missing / blocked. Using offline menu config.");
+            // Fetch fallback data if existing in localStorage
+            let saved = localStorage.getItem("sapphire_fallback_menu");
+            if (saved) {
+                menuItems = JSON.parse(saved);
+            } else {
+                menuItems = [
+                    { id: 1, name: "Sapphire Special Paneer Tikka", price: 345, category: "Starters", description: "Premium spiced marinated paneer tandoored" },
+                    { id: 2, name: "Dal Makhani Signature", price: 320, category: "Main Course", description: "Black lentils with premium cream" },
+                    { id: 3, name: "Butter Naan", price: 75, category: "Breads", description: "Hot flatbread with fresh butter" }
+                ];
+                localStorage.setItem("sapphire_fallback_menu", JSON.stringify(menuItems));
+            }
+            renderMenuItems();
+        }
+
+        async function fetchOrders() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}orders?order=created_at.desc`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Sound alert trigger if new orders are present
+                    if (orders.length > 0 && data.length > orders.length) {
+                        playOrderAlertSound();
+                        showToast("🔔 New Incoming Table Order!");
+                    }
+                    orders = data;
+                    renderOrders();
+                } else {
+                    useFallbackOrders();
+                }
+            } catch (e) {
+                useFallbackOrders();
+            }
+        }
+
+        function useFallbackOrders() {
+            // Fetch offline fallback orders
+            const data = JSON.parse(localStorage.getItem("sapphire_fallback_orders") || "[]");
+            orders = data.reverse(); // Newest first
+            renderOrders();
+        }
+
+        // --- RENDERING VIEWS ---
+
+        function renderOrders() {
+            const container = document.getElementById("live-orders-container");
+            const pendingCount = orders.filter(o => o.status === "Pending").length;
+            document.getElementById("order-badge").innerText = `${pendingCount} Pending`;
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-500 py-16 text-xs">
+                        <i class="fa-solid fa-square-check text-4xl mb-2 text-green-500/20"></i>
+                        <p>No active counter orders right now!</p>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = fetchedOrders.map(order => {
-                const itemsParsed = JSON.parse(order.items || "[]");
-                const totalCalculated = parseFloat(order.subtotal || 0) + parseFloat(order.cgst || 0) + parseFloat(order.sgst || 0);
-                const orderTime = new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            container.innerHTML = orders.map(order => {
+                let parsedItems = [];
+                try {
+                    parsedItems = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                } catch(e) { parsedItems = []; }
+
+                const itemsSummary = parsedItems.map(i => `${i.name} x${i.quantity}`).join(", ");
+                const timeStr = new Date(order.created_at || order.id).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+                const isPending = order.status === "Pending";
+                const borderClass = isPending ? 'border-l-4 border-red-500' : 'border-l-4 border-green-500';
 
                 return `
-                    <div class="bg-slate-900 border ${order.status === 'completed' ? 'border-emerald-500/30' : 'border-slate-800'} p-4 rounded-xl flex flex-col justify-between shadow-xl">
-                        <div>
-                            <div class="flex justify-between items-start border-b border-slate-800 pb-2 mb-3">
-                                <div>
-                                    <span class="bg-amber-500 text-slate-950 font-bold text-[10px] uppercase px-2 py-0.5 rounded-md">${order.table_number}</span>
-                                    <p class="text-[10px] text-gray-500 mt-1 font-mono">${orderTime}</p>
-                                </div>
-                                <span class="text-xs uppercase font-semibold ${order.status === 'completed' ? 'text-emerald-400' : 'text-amber-400'}">${order.status}</span>
+                    <div class="bg-gray-800/60 p-3 rounded border border-gray-700 flex flex-col justify-between space-y-2 relative transition duration-300 hover:bg-gray-800 ${borderClass}">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="text-yellow-500 font-bold tracking-wider text-xs uppercase">${order.table_number || 'TABLE UNKNOWN'}</span>
+                                <span class="text-[9px] text-gray-400 font-mono ml-2">@ ${timeStr}</span>
                             </div>
-
-                            <div class="space-y-1.5 mb-4">
-                                ${itemsParsed.map(i => `
-                                    <div class="flex justify-between text-xs text-gray-300">
-                                        <span>${i.name} <strong class="text-amber-400 font-mono">x${i.qty}</strong></span>
-                                        <span class="text-gray-500">₹${i.price * i.qty}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
+                            <span class="text-[9px] font-semibold px-2 py-0.5 rounded ${isPending ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-green-500/10 text-green-500 border border-green-500/20'}">${order.status}</span>
                         </div>
-
-                        <div class="border-t border-slate-800/80 pt-3 mt-auto">
-                            <div class="flex justify-between items-center text-xs mb-3 font-semibold">
-                                <span class="text-gray-400">Total (Inc. Tax):</span>
-                                <span class="text-amber-400 font-mono">₹${totalCalculated.toFixed(2)}</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="printThermalReceipt('${order.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs py-2 rounded-lg transition-colors">
-                                    🖨️ Print Receipt
+                        <p class="text-xs text-gray-300 line-clamp-1 italic">${itemsSummary || "Empty list"}</p>
+                        <div class="flex justify-between items-center border-t border-gray-700/50 pt-2 text-xs">
+                            <span class="font-mono text-gray-400 font-bold">Total: ₹ ${order.grand_total}</span>
+                            <div class="flex space-x-1">
+                                <button onclick="selectReceipt(${order.id})" class="bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded text-[10px] text-white flex items-center space-x-1">
+                                    <i class="fa-solid fa-receipt"></i> <span>View Bill</span>
                                 </button>
-                                ${order.status !== 'completed' ? `
-                                    <button onclick="updateOrderStatus('${order.id}', 'completed')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs py-2 rounded-lg transition-colors">
-                                        Complete
-                                    </button>
-                                ` : `
-                                    <div class="text-xs text-emerald-500/80 font-medium text-center my-auto">Processed ✓</div>
-                                `}
+                                ${isPending ? `
+                                <button onclick="markCompleted(${order.id})" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] flex items-center space-x-1">
+                                    <i class="fa-solid fa-circle-check"></i> <span>Served</span>
+                                </button>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
                 `;
-            }).join('');
+            }).join("");
         }
 
-        // Target Specific Record to Print Receipt dynamically
-        function printThermalReceipt(id) {
-            const target = fetchedOrders.find(o => o.id === id);
-            if (!target) return;
+        function renderMenuItems() {
+            const container = document.getElementById("admin-items-list");
+            if (menuItems.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-gray-500">No items available. Enter values above.</div>`;
+                return;
+            }
 
-            const items = JSON.parse(target.items || "[]");
-            const sub = parseFloat(target.subtotal || 0);
-            const cgst = parseFloat(target.cgst || 0);
-            const sgst = parseFloat(target.sgst || 0);
-            const grand = sub + cgst + sgst;
-
-            const printArea = document.getElementById('printable-receipt');
-            printArea.innerHTML = `
-                <div style="text-align: center; margin-bottom: 10px;">
-                    <h2 style="font-size: 14px; margin: 0;">HOTEL SAPPHIRE</h2>
-                    <p style="margin: 2px 0;">YAMUNA NAGAR</p>
-                    <p style="margin: 2px 0;">--- TAX INVOICE ---</p>
-                </div>
-                <p><strong>Table/Room:</strong> ${target.table_number}</p>
-                <p><strong>Date:</strong> ${new Date(target.created_at).toLocaleString()}</p>
-                <p>--------------------------------</p>
-                <table style="width: 100%; text-align: left; font-size: 11px;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid #000;">
-                            <th>Item</th>
-                            <th>Qty</th>
-                            <th style="text-align: right;">Amt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${items.map(i => `
-                            <tr>
-                                <td>${i.name.substring(0, 18)}</td>
-                                <td>${i.qty}</td>
-                                <td style="text-align: right;">${(i.price * i.qty).toFixed(2)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-                <p>--------------------------------</p>
-                <div style="font-size: 11px;">
-                    <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>₹${sub.toFixed(2)}</span></div>
-                    <div style="display: flex; justify-content: space-between;"><span>CGST (5%):</span><span>₹${cgst.toFixed(2)}</span></div>
-                    <div style="display: flex; justify-content: space-between;"><span>SGST (5%):</span><span>₹${sgst.toFixed(2)}</span></div>
-                    <div style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 4px; border-top: 1px dashed #000; pt-2;">
-                        <span>Grand Total:</span><span>₹${grand.toFixed(2)}</span>
+            container.innerHTML = menuItems.map(item => `
+                <div class="p-2 bg-gray-800/40 rounded border border-gray-800 flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-semibold text-white">${item.name}</div>
+                        <div class="text-[10px] text-gray-400 font-mono">${item.category} | ₹ ${item.price}</div>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <button onclick="editItem(${item.id})" class="text-blue-400 hover:text-blue-300 p-1"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteItem(${item.id})" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 15px; font-size: 10px;">
-                    <p>Thank You! Visit Again.</p>
-                </div>
-            `;
-
-            window.print();
+            `).join("");
         }
 
-        // Update Record Status on Supabase Table Endpoint
-        async function updateOrderStatus(id, newStatus) {
+        // --- ACTIVE RECEIPT SELECTION ---
+        function selectReceipt(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            selectedOrder = order;
+            
+            document.getElementById("rec-id").innerText = order.id.toString().slice(-6).toUpperCase();
+            document.getElementById("rec-date").innerText = new Date(order.created_at || order.id).toLocaleDateString();
+            document.getElementById("rec-table").innerText = order.table_number.toUpperCase();
+
+            let parsedItems = [];
             try {
-                const response = await fetch(`${SUPABASE_PATCH_BASE}?id=eq.${id}`, {
-                    method: 'PATCH',
+                parsedItems = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+            } catch(e) { parsedItems = []; }
+
+            const itemsHtml = parsedItems.map(item => {
+                const total = item.price * item.quantity;
+                return `
+                    <div class="grid grid-cols-12">
+                        <span class="col-span-6 truncate">${item.name.toUpperCase()}</span>
+                        <span class="col-span-2 text-center">${item.quantity}</span>
+                        <span class="col-span-2 text-right">${item.price}</span>
+                        <span class="col-span-2 text-right">${total}</span>
+                    </div>
+                `;
+            }).join("");
+
+            document.getElementById("rec-items-box").innerHTML = itemsHtml;
+            document.getElementById("rec-subtotal").innerText = `₹ ${order.subtotal.toFixed(2)}`;
+            document.getElementById("rec-sgst").innerText = `₹ ${order.sgst.toFixed(2)}`;
+            document.getElementById("rec-cgst").innerText = `₹ ${order.cgst.toFixed(2)}`;
+            document.getElementById("rec-grand").innerText = `₹ ${order.grand_total.toFixed(2)}`;
+
+            showToast(`Loaded details for Table: ${order.table_number}`);
+        }
+
+        // --- ORDER FULFILLMENT ACTION ---
+        async function markCompleted(orderId) {
+            try {
+                const response = await fetch(`${SUPABASE_URL}orders?id=eq.${orderId}`, {
+                    method: "PATCH",
                     headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=minimal'
+                        "Content-Type": "application/json",
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({ status: "Served" })
                 });
 
                 if (response.ok) {
-                    fetchIncomingOrders();
-                } else { throw new Error("Patch parsing error"); }
-            } catch (err) {
-                console.error("Failed status updates: ", err);
+                    showToast("Order status updated directly on database.");
+                    fetchOrders();
+                } else {
+                    fallbackMarkCompleted(orderId);
+                }
+            } catch (error) {
+                fallbackMarkCompleted(orderId);
             }
         }
 
-        // Initialize Runtime Engine with an Auto-polling Loop interval set to 5000ms
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchIncomingOrders();
-            setInterval(fetchIncomingOrders, 5000);
-        });
+        function fallbackMarkCompleted(orderId) {
+            let offline = JSON.parse(localStorage.getItem("sapphire_fallback_orders") || "[]");
+            const index = offline.findIndex(o => o.id === orderId);
+            if (index !== -1) {
+                offline[index].status = "Served";
+                localStorage.setItem("sapphire_fallback_orders", JSON.stringify(offline));
+                showToast("Order status marked Served offline!");
+                useFallbackOrders();
+            }
+        }
+
+        // --- DATABASE OPERATIONS (Food Items Setup/CRUD) ---
+        let editTargetId = null;
+
+        async function addOrUpdateFoodItem(e) {
+            e.preventDefault();
+
+            const name = document.getElementById("food-name").value;
+            const price = parseFloat(document.getElementById("food-price").value);
+            const category = document.getElementById("food-category").value;
+            const description = document.getElementById("food-description").value;
+
+            const payload = {
+                name: name,
+                price: price,
+                category: category,
+                description: description,
+                is_available: true
+            };
+
+            const formButton = e.target.querySelector('button[type="submit"]');
+            formButton.disabled = true;
+
+            try {
+                if (editTargetId) {
+                    // Update Item
+                    const response = await fetch(`${SUPABASE_URL}menu_items?id=eq.${editTargetId}`, {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": `Bearer ${SUPABASE_KEY}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        showToast("Updated item on database!");
+                    } else {
+                        throw new Error();
+                    }
+                } else {
+                    // Create Item
+                    const response = await fetch(`${SUPABASE_URL}menu_items`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": `Bearer ${SUPABASE_KEY}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        showToast("Saved item directly to your menu table!");
+                    } else {
+                        throw new Error();
+                    }
+                }
+                
+                resetForm();
+                fetchMenuItems();
+
+            } catch (error) {
+                // Local Storage offline fallback
+                if (editTargetId) {
+                    const idx = menuItems.findIndex(i => i.id === editTargetId);
+                    if (idx !== -1) {
+                        menuItems[idx] = { ...payload, id: editTargetId };
+                    }
+                } else {
+                    menuItems.push({ ...payload, id: Date.now() });
+                }
+                localStorage.setItem("sapphire_fallback_menu", JSON.stringify(menuItems));
+                showToast("Menu configuration saved offline!");
+                resetForm();
+                renderMenuItems();
+            } finally {
+                formButton.disabled = false;
+            }
+        }
+
+        function editItem(itemId) {
+            const item = menuItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            editTargetId = itemId;
+            document.getElementById("food-name").value = item.name;
+            document.getElementById("food-price").value = item.price;
+            document.getElementById("food-category").value = item.category;
+            document.getElementById("food-description").value = item.description || "";
+            
+            const submitBtn = document.querySelector('#food-form button[type="submit"]');
+            submitBtn.innerHTML = `<i class="fa-solid fa-floppy-disk mr-1"></i> UPDATE DELICACY`;
+            showToast("Editing item context: " + item.name);
+        }
+
+        async function deleteItem(itemId) {
+            if (!confirm("Are you sure you want to completely remove this item from your menu?")) return;
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}menu_items?id=eq.${itemId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+
+                if (response.ok) {
+                    showToast("Removed from database.");
+                    fetchMenuItems();
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                menuItems = menuItems.filter(i => i.id !== itemId);
+                localStorage.setItem("sapphire_fallback_menu", JSON.stringify(menuItems));
+                showToast("Removed from offline menu configuration.");
+                renderMenuItems();
+            }
+        }
+
+        function resetForm() {
+            editTargetId = null;
+            document.getElementById("food-form").reset();
+            const submitBtn = document.querySelector('#food-form button[type="submit"]');
+            submitBtn.innerHTML = `<i class="fa-solid fa-plus-circle mr-1"></i> SAVE ITEM TO DATABASE`;
+        }
+
+        // --- THERMAL INVOICE PRINTING ---
+        function printBill() {
+            if (!selectedOrder) {
+                showToast("Please select a live bill to print!");
+                return;
+            }
+            window.print();
+        }
+
+        // --- TOAST NOTIFICATION ---
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            document.getElementById("toast-message").innerText = msg;
+            toast.style.transform = "translateY(0)";
+            setTimeout(() => {
+                toast.style.transform = "translateY(-150%)";
+            }, 3000);
+        }
+
+        // Initialization
+        window.onload = function() {
+            syncAllData();
+            // Continuously listen/poll for new kitchen orders from Supabase every 5 seconds
+            setInterval(syncAllData, 5000);
+        }
     </script>
 </body>
 </html>
+
+```

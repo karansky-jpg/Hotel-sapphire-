@@ -1,4 +1,3 @@
-HOTEL SAPPHIRE
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,17 +16,18 @@ HOTEL SAPPHIRE
     <style>
         body {
             font-family: 'Outfit', sans-serif;
-            background: radial-gradient(circle at center, #1a1510 0%, #0a0806 100%);
-            color: #f3ede2;
+            background: radial-gradient(circle at center, #1a140f 0%, #060403 100%);
+            color: #f6efe2;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
             user-select: none;
+            -webkit-user-select: none;
         }
         .serif-font {
             font-family: 'Cinzel', serif;
         }
-        /* Page flip book container */
+        /* 3D Page flip container */
         .book-container {
             perspective: 1500px;
             position: relative;
@@ -39,48 +39,40 @@ HOTEL SAPPHIRE
             top: 0;
             left: 0;
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease-in-out;
             transform-origin: left center;
-        }
-        .book-page.flipped {
-            transform: rotateY(-180deg);
         }
         .page-face {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.95);
         }
         .page-front {
             z-index: 2;
-            background: linear-gradient(135deg, #17130e 0%, #1c1813 100%);
-            border: 2px solid #d4af3733;
+            background: linear-gradient(135deg, #17130f 0%, #1f1914 100%);
+            border: 2px solid rgba(212, 175, 55, 0.22);
         }
-        .page-back {
-            transform: rotateY(180deg);
-            background: linear-gradient(135deg, #1a1510 0%, #15110c 100%);
-            border: 2px solid #d4af3733;
-        }
-        /* Custom scrollbar for small components inside book */
+        /* Scrollbar customization */
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
         .custom-scroll::-webkit-scrollbar-track {
-            background: rgba(212, 175, 55, 0.05);
+            background: rgba(212, 175, 55, 0.02);
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.2);
             border-radius: 4px;
         }
-        /* Premium Glows */
+        /* Theme highlights */
         .gold-border {
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            border: 1px solid rgba(212, 175, 55, 0.3);
         }
         .gold-glow {
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
         }
         .text-gold {
             color: #d4af37;
@@ -88,57 +80,66 @@ HOTEL SAPPHIRE
         .bg-gold {
             background-color: #d4af37;
         }
-        /* Hide element offscreen beautifully */
+        /* Page animation states */
         .page-hidden {
             pointer-events: none;
             opacity: 0;
             z-index: 0 !important;
+            transform: scale(0.96) rotateY(-8deg);
         }
         .page-active {
             pointer-events: auto;
             opacity: 1;
             z-index: 10;
+            transform: scale(1) rotateY(0deg);
+        }
+        .rate-button-pulse {
+            animation: pulseGlow 2.5s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 4px rgba(212, 175, 55, 0.15); }
+            50% { box-shadow: 0 0 12px rgba(212, 175, 55, 0.4); }
         }
     </style>
 </head>
 <body class="flex flex-col justify-between h-screen w-screen relative">
 
-    <!-- TOP BAR BRANDING (Agency Credit) -->
-    <header class="w-full bg-[#120f0a] border-b border-[#d4af3733] py-2 px-4 z-50 text-center flex justify-between items-center h-[50px]">
+    <!-- TOP AGENCY BRANDING HEADER -->
+    <header class="w-full bg-[#100c09] border-b border-[#d4af3720] py-2 px-4 z-50 text-center flex justify-between items-center h-[52px]">
         <div class="flex items-center space-x-2">
-            <span class="text-gold text-lg"><i class="fa-solid fa-hotel"></i></span>
-            <span class="serif-font text-xs md:text-sm tracking-widest font-semibold text-white">HOTEL SAPPHIRE</span>
+            <span class="text-gold text-base"><i class="fa-solid fa-gem animate-pulse"></i></span>
+            <span class="serif-font text-xs md:text-sm tracking-widest font-bold text-white">THE BACK DOOR • SAPPHIRE</span>
         </div>
-        <a href="https://karan-digital-menu-agency.vercel.app/#contact" target="_blank" class="text-[10px] md:text-xs tracking-wider font-medium text-gold hover:text-white transition duration-300 border border-[#d4af3755] px-3 py-1 rounded-full bg-[#1e1810]">
-            Created By. KARAN DIGITAL MENU AGENCY <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+        <a href="https://karan-digital-menu-agency.vercel.app/#contact" target="_blank" class="text-[9px] md:text-xs tracking-widest font-semibold text-gold hover:text-white transition duration-300 border border-[#d4af3735] px-3 py-1 rounded-full bg-[#19130e]">
+            Created By. KARAN DIGITAL MENU AGENCY <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[8px]"></i>
         </a>
     </header>
 
-    <!-- MAIN DISPLAY/MENU SYSTEM CONTAINER -->
-    <main class="flex-grow w-full max-w-lg mx-auto relative px-4 py-3 flex items-center justify-center h-[calc(100vh-110px)] overflow-hidden">
+    <!-- BOOK MAIN CONTAINER -->
+    <main class="flex-grow w-full max-w-md mx-auto relative px-3 py-3 flex items-center justify-center h-[calc(100vh-112px)] overflow-hidden">
         
-        <!-- INTRO INSTRUCTIONS / SWIPE OVERLAY (appears briefly or as icon) -->
-        <div id="swipe-hint" class="absolute inset-0 bg-black/80 z-40 flex flex-col items-center justify-center text-center p-6 pointer-events-none transition-opacity duration-500">
-            <div class="w-20 h-20 rounded-full border-2 border-gold flex items-center justify-center mb-4 animate-pulse">
+        <!-- SWIPE GESTURES OVERLAY -->
+        <div id="swipe-hint" class="absolute inset-0 bg-black/95 z-40 flex flex-col items-center justify-center text-center p-6 transition-opacity duration-500">
+            <div class="w-20 h-20 rounded-full border-2 border-gold flex items-center justify-center mb-4 rate-button-pulse">
                 <i class="fa-solid fa-hand-pointer text-gold text-3xl animate-bounce"></i>
             </div>
-            <h3 class="serif-font text-xl text-gold mb-2">Swipe to Turn Pages</h3>
-            <p class="text-xs text-gray-400 max-w-xs">Swipe Left or Right to flip pages. Add food items to your card & place your order seamlessly.</p>
-            <button onclick="dismissHint()" class="mt-6 px-6 py-2 bg-gold text-black rounded font-bold text-xs pointer-events-auto hover:bg-yellow-500 transition">EXPLORE MENU</button>
+            <h3 class="serif-font text-xl text-gold mb-2 tracking-wider">Swipe to Flip Pages</h3>
+            <p class="text-xs text-gray-400 max-w-xs leading-relaxed">Simply swipe left or right to browse pages like an authentic physical menu book. Add items to order instantly.</p>
+            <div id="sync-source-badge" class="mt-4 text-[10px] text-gray-500 bg-gray-950 border border-gray-800 px-3 py-1 rounded font-mono">
+                Acquiring Google Sheets configuration...
+            </div>
+            <button onclick="dismissHint()" class="mt-6 px-8 py-2.5 bg-gold text-black rounded font-bold text-xs tracking-widest hover:bg-yellow-500 transition">ENTER MENU</button>
         </div>
 
         <!-- 3D BOOK PORT -->
-        <div class="w-full h-full max-h-[580px] relative book-container flex items-center justify-center">
-            
-            <!-- PAGE GENERATOR CONTAINER (Dynamic Pages rendered here) -->
+        <div class="w-full h-full max-h-[570px] relative book-container flex items-center justify-center">
             <div id="book" class="w-full h-full relative">
-                <!-- Pages are injected dynamically by JS -->
+                <!-- Pages are injected dynamically by JavaScript -->
             </div>
-
         </div>
     </main>
 
-    <!-- FLOATING CART OVERVIEW & CONTROLS -->
+    <!-- FLOATING ORDER CART UNIT -->
     <div id="cart-dock" class="fixed bottom-16 right-4 z-40 flex items-center space-x-2">
         <button onclick="goToCartPage()" class="relative bg-gold hover:bg-yellow-500 text-black font-bold p-4 rounded-full shadow-lg transition duration-300 focus:outline-none flex items-center justify-center gold-glow">
             <i class="fa-solid fa-cart-shopping text-xl"></i>
@@ -146,142 +147,257 @@ HOTEL SAPPHIRE
         </button>
     </div>
 
-    <!-- QUICK PAGE DOTS / NAV INDICATOR -->
-    <div class="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 flex items-center space-x-2 bg-black/60 px-3 py-1 rounded-full border border-gold/20">
-        <button onclick="prevPage()" class="text-gold hover:text-white px-2"><i class="fa-solid fa-chevron-left"></i></button>
-        <span id="page-num-indicator" class="text-xs tracking-widest text-gold/80 serif-font">PAGE 1 / 5</span>
-        <button onclick="nextPage()" class="text-gold hover:text-white px-2"><i class="fa-solid fa-chevron-right"></i></button>
+    <!-- QUICK DOTS / PAGE TOGGLER -->
+    <div class="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 flex items-center space-x-2 bg-black/80 px-3 py-1 rounded-full border border-gold/10">
+        <button onclick="prevPage()" class="text-gold hover:text-white px-2.5 py-0.5"><i class="fa-solid fa-chevron-left"></i></button>
+        <span id="page-num-indicator" class="text-xs tracking-widest text-gold serif-font">PAGE 1</span>
+        <button onclick="nextPage()" class="text-gold hover:text-white px-2.5 py-0.5"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
-    <!-- BOTTOM FEEDBACK BUTTON (Directs to Google review search) -->
-    <footer class="w-full bg-[#0a0806] border-t border-[#d4af3722] py-2 px-4 z-50 text-center h-[50px] flex items-center justify-center">
-        <a href="https://www.google.com/search?q=Hotel+sapphire+yamunanagar+reviews" target="_blank" class="flex items-center space-x-2 text-xs text-[#d4af37] hover:text-white font-medium transition duration-300 border border-[#d4af3744] rounded-full px-5 py-1.5 bg-[#120f0a]">
-            <i class="fa-solid fa-star text-amber-400"></i>
+    <!-- FEEDBACK UNIT WITH GOOGLE MAPS DIRECT TARGETING -->
+    <footer class="w-full bg-[#060403] border-t border-[#d4af3710] py-2 px-4 z-50 text-center h-[50px] flex items-center justify-center">
+        <a href="https://www.google.com/search?q=Hotel+sapphire+yamunanagar+reviews#lrd=0x390ef9efb8133fef:0x513c3a68f03efa87,3,5" target="_blank" class="flex items-center space-x-2 text-xs text-[#d4af37] hover:text-white font-medium transition duration-300 border border-[#d4af3725] rounded-full px-5 py-1.5 bg-[#0e0a07] rate-button-pulse">
+            <i class="fa-solid fa-star text-yellow-500 animate-pulse"></i>
             <span>Rate Us & Give Feedback on Google</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
         </a>
     </footer>
 
-    <!-- INTERACTIVE TABLE / ROOM SELECTOR POPUP (Triggers on first Cart Add or Order attempt) -->
+    <!-- INTERACTIVE TABLE / ROOM CAPTURING DIALOG -->
     <div id="table-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-[#1a1510] border-2 border-gold rounded-xl p-6 w-full max-w-sm text-center shadow-2xl relative">
-            <h3 class="serif-font text-gold text-lg mb-4 tracking-wider">SELECT YOUR TABLE</h3>
-            <p class="text-xs text-gray-400 mb-6">Please choose your Table / Cabin number to place orders directly to the counter.</p>
+        <div class="bg-[#16120e] border-2 border-gold rounded-xl p-6 w-full max-w-sm text-center shadow-2xl relative">
+            <h3 class="serif-font text-gold text-base mb-3 tracking-wider font-bold">CHOOSE YOUR TABLE</h3>
+            <p class="text-[11px] text-gray-400 mb-5 leading-relaxed">Confirm your Dining Cabin / Table number below to print bills at the counter.</p>
             
-            <div class="grid grid-cols-4 gap-2 mb-6">
-                <!-- Generated dynamically or simple hardcoded buttons -->
-                <button onclick="selectTable(1)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-1</button>
-                <button onclick="selectTable(2)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-2</button>
-                <button onclick="selectTable(3)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-3</button>
-                <button onclick="selectTable(4)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-4</button>
-                <button onclick="selectTable(5)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-5</button>
-                <button onclick="selectTable(6)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-6</button>
-                <button onclick="selectTable(7)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-7</button>
-                <button onclick="selectTable(8)" class="table-btn p-3 rounded border border-gold/20 hover:bg-gold hover:text-black font-bold transition text-sm">T-8</button>
+            <div class="grid grid-cols-4 gap-2 mb-5">
+                <button onclick="selectTable(1)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-1</button>
+                <button onclick="selectTable(2)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-2</button>
+                <button onclick="selectTable(3)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-3</button>
+                <button onclick="selectTable(4)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-4</button>
+                <button onclick="selectTable(5)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-5</button>
+                <button onclick="selectTable(6)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-6</button>
+                <button onclick="selectTable(7)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-7</button>
+                <button onclick="selectTable(8)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-8</button>
             </div>
             
             <div class="flex flex-col space-y-2">
-                <input type="text" id="custom-table" placeholder="Or enter Room/Cabin Number" class="bg-black/40 text-white text-center border border-gold/30 rounded py-2 px-3 focus:outline-none focus:border-gold text-sm">
-                <button onclick="saveTableSelection()" class="w-full bg-gold text-black py-2.5 rounded font-bold text-sm tracking-wider hover:bg-yellow-500 transition">CONFIRM TABLE</button>
+                <input type="text" id="custom-table" placeholder="Or Enter Cabin / Suite Room" class="bg-black/40 text-white text-center border border-gold/25 rounded py-2 px-3 focus:outline-none focus:border-gold text-xs">
+                <button onclick="saveTableSelection()" class="w-full bg-gold text-black py-2.5 rounded font-bold text-xs tracking-widest hover:bg-yellow-500 transition">CONFIRM LOCATION</button>
             </div>
         </div>
     </div>
 
-    <!-- NOTIFICATION POPUP (Toast replacement, avoiding alert()) -->
-    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#1e1810] border border-gold px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2 text-xs md:text-sm text-gold transform translate-y-[-150%] transition-transform duration-300 max-w-[90%] pointer-events-none">
+    <!-- SYSTEM ALERTS TOAST -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#16120e] border border-gold px-4 py-3 rounded-lg shadow-xl flex items-center space-x-2 text-xs md:text-sm text-gold transform translate-y-[-150%] transition-transform duration-300 max-w-[90%] pointer-events-none">
         <i id="toast-icon" class="fa-solid fa-circle-check"></i>
-        <span id="toast-message">Item added to your order cart!</span>
+        <span id="toast-message">Item Added!</span>
     </div>
 
-    <!-- AUDIO TOGGLE FLOATER -->
+    <!-- AUDIO CONTROLLER -->
     <div class="fixed bottom-16 left-4 z-40">
-        <button onclick="toggleAudio()" id="audio-btn" class="bg-black/80 hover:bg-[#1c1813] border border-gold/40 text-gold p-3 rounded-full shadow-lg transition duration-300 flex items-center justify-center">
+        <button onclick="toggleAudio()" id="audio-btn" class="bg-black/80 hover:bg-[#16120e] border border-gold/30 text-gold p-3 rounded-full shadow-lg transition duration-300 flex items-center justify-center">
             <i id="audio-icon" class="fa-solid fa-volume-high"></i>
         </button>
     </div>
 
     <script>
-        // --- SUPABASE CONFIGURATION ---
+        // --- API INTEGRATIONS ---
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1_YNC57MPCAUlxlNydQzcrgKPZwBI0CB12awVte6u4_A/export?format=csv";
         const SUPABASE_URL = "https://kvzmmqzyspplqmxetdir.supabase.co/rest/v1/";
         const SUPABASE_KEY = "sb_publishable_zI3NcmwRAjXgUg-dStSerA_cusoGsKf";
 
-        let db = null;
         let menuItems = [];
         let cart = [];
         let currentPageIndex = 0;
         let selectedTable = null;
         let audioEnabled = true;
+        let totalPagesArray = [];
 
-        // Fallback Premium Menu Data if Supabase table is not configured or empty
+        // --- FULL DIRECT PARSED BACKUP MENU CATALOG (FROM PDF) ---
         const defaultMenu = [
-            // Category: Starters
-            { id: 1, name: "Sapphire Special Paneer Tikka", description: "Fresh cottage cheese chunks marinated in special spices & tandoor grilled.", price: 345, category: "Starters", image_url: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400" },
-            { id: 2, name: "Hara Bhara Kebab", description: "Delicate spinach, potato, and green peas pan fried patties flavored with spices.", price: 285, category: "Starters", image_url: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=400" },
-            { id: 3, name: "Crispy Honey Chilli Potatoes", description: "Crisp potato fingers glazed in chef's secret dark sweet spicy glaze.", price: 260, category: "Starters", image_url: "https://images.unsplash.com/photo-1518013006304-4e44f847f255?w=400" },
-            
-            // Category: Main Course
-            { id: 4, name: "Shahi Kadhai Paneer", description: "Tender paneer cubes simmered in spicy tomato onion gravy with capsicum.", price: 395, category: "Main Course", image_url: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400" },
-            { id: 5, name: "Dal Makhani Signature", description: "Black lentils cooked overnight with cream, butter & home churned spices.", price: 320, category: "Main Course", image_url: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400" },
-            { id: 6, name: "Soya Chaap Masala", description: "Juicy soy pieces roasted in clay oven and cooked in a spicy robust gravy.", price: 340, category: "Main Course", image_url: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=400" },
-            
-            // Category: Breads & Rice
-            { id: 7, name: "Butter Naan", description: "Flaky, hot flatbread brushed generously with pure premium butter.", price: 75, category: "Breads", image_url: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=400" },
-            { id: 8, name: "Garlic Laccha Parantha", description: "Multi-layered dynamic flatbread baked with fresh minced garlic and herbs.", price: 95, category: "Breads", image_url: "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=400" },
-            { id: 9, name: "Jeera Basmati Rice", description: "Fragrant basmati rice tossed with roasted cumin seeds and fresh coriander.", price: 180, category: "Breads", image_url: "https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400" },
-            
-            // Category: Desserts & Shakes
-            { id: 10, name: "Sizzling Brownie with Ice Cream", description: "Hot homemade fudge brownie served on hot plate with cold vanilla scoop.", price: 220, category: "Desserts", image_url: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400" },
-            { id: 11, name: "Royal Kulfi Falooda", description: "Traditional luxury Indian ice cream blended with rose syrup & vermicelli.", price: 165, category: "Desserts", image_url: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400" },
-            { id: 12, name: "Ice cold Blue Lagoon Mocktail", description: "Refreshing blend of blue curacao, fresh mint, lime juice & premium carbonation.", price: 150, category: "Drinks", image_url: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" }
+            // Page 1: Bar Bites
+            { id: 1, name: "Crispy Veg Nuggets", price: 345, category: "Bar Bites", description: "Medley of veggies and potato mix fried with spicy mayo." },
+            { id: 2, name: "Channa Chaat", price: 445, category: "Bar Bites", description: "Boiled chickpeas with onion, tomato, ground spices with lemon." },
+            { id: 3, name: "Chicken Pop Corn", price: 495, category: "Bar Bites", description: "Bite-sized tender and crisp chunks of chicken seasoned to perfection." },
+            { id: 4, name: "Spinach Leaf Chaat", price: 445, category: "Bar Bites", description: "Chaat snack made with crispy spinach fritters topped with tangy flavours." },
+            { id: 5, name: "Peanut Masala", price: 395, category: "Bar Bites", description: "Crunchy peanuts topped with spicy tangy onion and tomato mix." },
+            { id: 6, name: "Masala Papad Duo", price: 245, category: "Bar Bites", description: "Topped with a tangy spicy onion and tomato mix (Plain available for 145)." },
+            { id: 7, name: "Fresh Cut Fruit", price: 345, category: "Bar Bites", description: "Assorted seasonal fresh cut fruits." },
+            { id: 8, name: "French Fries", price: 375, category: "Bar Bites", description: "Crispy golden fried potato strips." },
+            { id: 9, name: "Cocktail Platter", price: 695, category: "Bar Bites", description: "Combo of assorted premium nuts and papads." },
+            { id: 10, name: "Chips & Dip Platter", price: 495, category: "Bar Bites", description: "Onion crisps, jalapeno & potato poppers, potato chips, nachos, salsa, jalapeno ketchup, hot BBQ, sour cream." },
+
+            // Page 2: Soups
+            { id: 11, name: "Khow Suey (Veg)", price: 495, category: "Soups", description: "Noodles with coconut milk, soup served with assorted condiments." },
+            { id: 12, name: "Khow Suey (Chicken)", price: 595, category: "Soups", description: "Noodles with coconut milk, chicken soup served with assorted condiments." },
+            { id: 13, name: "Tibetan Dumpling (Veg)", price: 395, category: "Soups", description: "Traditional Tibetan dish combining dumplings & vegetables in flavorful broth." },
+            { id: 14, name: "Tibetan Dumpling (Chicken)", price: 495, category: "Soups", description: "Traditional Tibetan dish combining chicken dumplings in flavorful broth." },
+            { id: 15, name: "Burnt Garlic Clear (Veg)", price: 325, category: "Soups", description: "Vegetable soup cooked with delightful flavour of burnt garlic." },
+            { id: 16, name: "Burnt Garlic Clear (Chicken)", price: 375, category: "Soups", description: "Chicken clear soup with delightful flavour & aroma of burnt garlic." },
+            { id: 17, name: "Manchow Soup (Veg)", price: 325, category: "Soups", description: "Hot and spicy Indo-Chinese soup with assorted vegetables." },
+            { id: 18, name: "Manchow Soup (Chicken)", price: 375, category: "Soups", description: "Hot and spicy Indo-Chinese soup with chicken & egg drops." },
+            { id: 19, name: "Mushroom Cappuccino", price: 325, category: "Soups", description: "A delicious mushroom soup served with savory milk foam." },
+            { id: 20, name: "Oven Roasted Tomato Soup", price: 325, category: "Soups", description: "Flavorful soup made of oven-roasted tomatoes with broth." },
+
+            // Page 3: Salads
+            { id: 21, name: "Back Door Caesar (Veg)", price: 495, category: "Salads", description: "Lettuce, croutons, caesar dressing, parmesan cheese." },
+            { id: 22, name: "Back Door Caesar (Chicken)", price: 595, category: "Salads", description: "Lettuce, croutons, caesar dressing, parmesan cheese with grilled chicken." },
+            { id: 23, name: "Kimchi Salad (Veg)", price: 445, category: "Salads", description: "Korean-inspired salad with a refreshing and flavourful twist." },
+            { id: 24, name: "Kimchi Salad (Chicken)", price: 545, category: "Salads", description: "Korean-inspired salad with tender chicken slices." },
+            { id: 25, name: "Beetroot Quinoa", price: 495, category: "Salads", description: "Roasted earthy beetroot on a bed of healthy quinoa." },
+            { id: 26, name: "Smoked Watermelon & Feta", price: 495, category: "Salads", description: "Cubes of watermelon tossed with fresh cream & crumbled feta." },
+            { id: 27, name: "Garden Green Salad", price: 245, category: "Salads", description: "A platter of fresh garden crisp vegetables." },
+
+            // Page 4: Small Plates
+            { id: 28, name: "Honey Chilli Potato", price: 545, category: "Small Plates", description: "Crisp potato fingers tossed in sweet honey chilli glaze." },
+            { id: 29, name: "Channa Chilli", price: 545, category: "Small Plates", description: "Crunchy chickpeas tossed with soya and chilli sauce." },
+            { id: 30, name: "Baked Tex Mex Nachos (Veg)", price: 545, category: "Small Plates", description: "Baked tortilla chips with cheese, salsa and fresh veggies." },
+            { id: 31, name: "Baked Tex Mex Nachos (Chicken)", price: 595, category: "Small Plates", description: "Baked tortilla chips with cheese, salsa, veggies and chicken." },
+            { id: 32, name: "Mexican Baked Bean Tacos (Veg)", price: 495, category: "Small Plates", description: "Hard shell tacos with lettuce, baked kidney beans and sour cream." },
+            { id: 33, name: "Mexican Baked Bean Tacos (Chicken)", price: 595, category: "Small Plates", description: "Hard shell tacos with chicken, baked kidney beans and sour cream." },
+            { id: 34, name: "Hummus with Falafel", price: 545, category: "Small Plates", description: "Creamy hummus with crispy falafel balls, herbs and spices." },
+            { id: 35, name: "Corn Pepper Cheese Roll", price: 545, category: "Small Plates", description: "Deep fried bell peppers & corn with cheese served with sweet chilli dip." },
+            { id: 36, name: "Chilli Garlic Cigars", price: 545, category: "Small Plates", description: "Cheese-filled deep-fried cigar rolls served with dip." },
+            { id: 37, name: "Cajun Chicken Sticks", price: 595, category: "Small Plates", description: "Crispy fried boneless chicken in cajun spice mix." },
+            { id: 38, name: "Grilled Chicken Specialty", price: 675, category: "Small Plates", description: "Juicy, tender, flavourful grilled boneless chicken." },
+            { id: 39, name: "Crisp Batter Fish Finger", price: 945, category: "Small Plates", description: "Crispy batter-fried fish fingers served with tartar sauce." },
+
+            // Page 5: Dim-Sum & Sizzlers
+            { id: 40, name: "Crystal Veg. Dimsum", price: 425, category: "Dim-Sum & Sizzler", description: "Translucent dumplings stuffed with exotic garden veggies." },
+            { id: 41, name: "Golden Garlic Mushroom Dimsum", price: 425, category: "Dim-Sum & Sizzler", description: "Steamed dimsum filled with garlicky wild mushrooms." },
+            { id: 42, name: "Waterchestnut Dimsum", price: 495, category: "Dim-Sum & Sizzler", description: "Dumplings with crunchy waterchestnuts & herbs." },
+            { id: 43, name: "Ginger Panda in Chilli Oil", price: 495, category: "Dim-Sum & Sizzler", description: "Delicious ginger veggie wontons drenched in aromatic chilli oil." },
+            { id: 44, name: "Chicken Bok-Choy Dimsum", price: 625, category: "Dim-Sum & Sizzler", description: "Steamed chicken and bok-choy filling." },
+            { id: 45, name: "Chicken Gyoza in Chilli Oil", price: 625, category: "Dim-Sum & Sizzler", description: "Pan-seared chicken dumplings served with hot chilli oil." },
+            { id: 46, name: "Veg Sizzler Platter", price: 795, category: "Dim-Sum & Sizzler", description: "Paneer shashlik, veg patty, herbed rice, veggies, wedges in BBQ sauce." },
+            { id: 47, name: "Non Veg Sizzler Platter", price: 995, category: "Dim-Sum & Sizzler", description: "Chicken shashlik, BBQ chicken, herbed rice, veggies, wedges in BBQ sauce." },
+
+            // Page 6: Sushi & Baos
+            { id: 48, name: "California Roll (8 Pcs)", price: 845, category: "Sushi & Baos", description: "Asparagus, cucumber, avocado, sesame, Japanese mayo." },
+            { id: 49, name: "Dragon Maki Roll (8 Pcs)", price: 845, category: "Sushi & Baos", description: "Avocado, shiitake mushroom, pickled cucumber." },
+            { id: 50, name: "Cream Cheese Roll (8 Pcs)", price: 845, category: "Sushi & Baos", description: "Cream cheese, spring onion, Japanese mayo, cucumber, lettuce." },
+            { id: 51, name: "Asparagus Tempura Roll", price: 925, category: "Sushi & Baos", description: "Asparagus, spicy mayo, cream cheese, sesame & flakes." },
+            { id: 52, name: "Spicy Avocado Roll (8 Pcs)", price: 925, category: "Sushi & Baos", description: "Avocado, spicy mayo, pickled cucumber, sesame." },
+            { id: 53, name: "Teriyaki Chicken Roll", price: 945, category: "Sushi & Baos", description: "Teriyaki glazed chicken, cucumber, avocado, spicy mayo." },
+            { id: 54, name: "Prawn Tempura Roll", price: 995, category: "Sushi & Baos", description: "Prawns hand rolled with sesame and tempura flakes." },
+            { id: 55, name: "Thai Basil Mushroom Bao (2)", price: 495, category: "Sushi & Baos", description: "Steamed fluffy buns stuffed with basil mushroom." },
+            { id: 56, name: "Five Spice Cottage Cheese Bao (2)", price: 495, category: "Sushi & Baos", description: "Fluffy baos with five-spice infused paneer." },
+            { id: 57, name: "Korean Chicken Bao (2)", price: 595, category: "Sushi & Baos", description: "Spicy Korean glazed chicken inside warm baos." },
+
+            // Page 7: Asian Appetizers
+            { id: 58, name: "Veg. Salt & Pepper", price: 545, category: "Asian Appetizers", description: "Exotic veggies seasoned with salt, pepper & spices." },
+            { id: 59, name: "Crackling Corn & Spinach", price: 545, category: "Asian Appetizers", description: "Crispy corn kernels, tender spinach with paprika." },
+            { id: 60, name: "Shanghai Style Lotus Stem", price: 645, category: "Asian Appetizers", description: "Deep-fried lotus stem in honey chilli sauce." },
+            { id: 61, name: "Cheese Chilli Dry", price: 595, category: "Asian Appetizers", description: "Indian cottage cheese tossed in flavorful spices." },
+            { id: 62, name: "Drums of Heaven", price: 695, category: "Asian Appetizers", description: "Crispy chicken wings tossed in five-spice sauce." },
+            { id: 63, name: "Chilli Chicken Dry", price: 695, category: "Asian Appetizers", description: "Marinated tender chicken tossed with peppers & green chillies." },
+            { id: 64, name: "Chilli Garlic Prawn", price: 995, category: "Asian Appetizers", description: "Deep fried scallion prawns in chilli garlic sauce." },
+
+            // Page 8 & 9: Indian Appetizers
+            { id: 65, name: "Beetroot Galouti Kebab", price: 645, category: "Indian Starters", description: "Melt-in-mouth kebab made of roasted beets & spices." },
+            { id: 66, name: "Malai Broccoli Royal", price: 595, category: "Indian Starters", description: "Broccoli florets marinated in cardamom cream & grilled." },
+            { id: 67, name: "Paneer Tikka (Kasundi / Malai)", price: 545, category: "Indian Starters", description: "Cottage cheese cubes marinated in mustard/cream and tandoored." },
+            { id: 68, name: "Dahi Kebab Spiced", price: 545, category: "Indian Starters", description: "Crispy fried hung curd patties flavored with cardamoms." },
+            { id: 69, name: "Mutton Shami Kebab", price: 795, category: "Indian Starters", description: "Fine mutton patties blended with lentils and spices." },
+            { id: 70, name: "Tandoori Chicken Classic", price: 695, category: "Indian Starters", description: "Clay-oven roasted spring chicken marinated with home spices." },
+            { id: 71, name: "Angara Murgh Tikka", price: 695, category: "Indian Starters", description: "Fiery red hot spicy tandoored chicken cubes." },
+            { id: 72, name: "Amritsari Fish Crisp", price: 945, category: "Indian Starters", description: "Carom-seeded crispy deep-fried river fish." },
+            { id: 73, name: "Tandoori Platter (Veg)", price: 945, category: "Indian Starters", description: "Paneer Tikka, masala chaap, malai broccoli, stuffed mushroom, pineapple." },
+            { id: 74, name: "Tandoori Platter (Non-Veg)", price: 1095, category: "Indian Starters", description: "Angara tikka, Afghani chicken tikka, chicken seekh, mutton seekh, fish tikka." },
+
+            // Page 10: Pizzeria
+            { id: 75, name: "Margherita Pizza", price: 595, category: "Pizzeria", description: "Topped with fresh mozzarella, basil, and cherry tomatoes." },
+            { id: 76, name: "Exotica Pizza (Veg)", price: 645, category: "Pizzeria", description: "Broccoli, zucchini, olive, jalapeno & herbs." },
+            { id: 77, name: "Exotica Pizza (Chicken)", price: 745, category: "Pizzeria", description: "Exotic pizza with loaded grilled chicken and fresh herbs." },
+            { id: 78, name: "Paneer Tikka Pizza", price: 645, category: "Pizzeria", description: "Indian cottage cheese tikka, onion, capsicum, red paprika." },
+            { id: 79, name: "Chicken Tikka Pizza", price: 745, category: "Pizzeria", description: "Tender chicken tikka chunks with onions, capsicums and jalapenos." },
+
+            // Page 11: Pasta
+            { id: 80, name: "Spaghetti Aglio E Olio", price: 595, category: "Pastas & Lasagna", description: "Tossed in premium olive oil, garlic, chilli flakes & parmesan." },
+            { id: 81, name: "Penne Alfredo (Veg)", price: 595, category: "Pastas & Lasagna", description: "Tossed in incredibly rich and creamy alfredo sauce." },
+            { id: 82, name: "Penne Alfredo (Chicken)", price: 695, category: "Pastas & Lasagna", description: "Penne tossed in creamy alfredo sauce with succulent chicken." },
+            { id: 83, name: "Penne Arrabbiata (Veg)", price: 595, category: "Pastas & Lasagna", description: "Spiced chunky Italian tomato sauce with fresh basil." },
+            { id: 84, name: "Pulled Butter Chicken Lasagna", price: 795, category: "Pastas & Lasagna", description: "Layers of pasta sheet filled with shredded tandoori chicken & makhani cheese sauce." },
+
+            // Page 12: Full Plates
+            { id: 85, name: "Stir Fried Greens & Rice", price: 545, category: "Full Plates", description: "Asian green veggies in chilli garlic sauce served with jasmine rice." },
+            { id: 86, name: "Classic Thai Curry (Veg)", price: 795, category: "Full Plates", description: "Creamy Green or Red Thai curry served with jasmine rice." },
+            { id: 87, name: "Classic Thai Curry (Chicken)", price: 845, category: "Full Plates", description: "Classic Green/Red curry with chicken served with jasmine rice." },
+            { id: 88, name: "Herb Crusted Grilled Fish", price: 945, category: "Full Plates", description: "Sol fish fillet marinated in herbs with mashed potatoes & veggies." },
+
+            // Page 13: Indian Main Course
+            { id: 89, name: "Dal Makhani Signature", price: 445, category: "Indian Mains", description: "Black lentils cooked overnight with cream & pure butter." },
+            { id: 90, name: "Kadai Paneer Deluxe", price: 575, category: "Indian Mains", description: "Paneer chunks with crushed whole spices, capsicum and tomatoes." },
+            { id: 91, name: "Paneer Butter Masala", price: 575, category: "Indian Mains", description: "Cottage cheese cubes simmered in a velvet butter-tomato gravy." },
+            { id: 92, name: "Butter Chicken Classic", price: 675, category: "Indian Mains", description: "Tandoori chicken shredded and cooked in creamy tomato makhani gravy." },
+            { id: 93, name: "Mutton Rogan Josh", price: 895, category: "Indian Mains", description: "Traditional Kashmiri style mutton slow-cooked with root spices." },
+            { id: 94, name: "Backdoor Special Mutton", price: 895, category: "Indian Mains", description: "Chef's secret spices slow-cooked robust mutton gravy." },
+
+            // Page 14: Rice, Noodles, Breads & Raitas
+            { id: 95, name: "Butter Naan Hot", price: 125, category: "Breads & Rice", description: "Flaky and soft refined flour bread glazed with premium butter." },
+            { id: 96, name: "Bread Basket (Assorted)", price: 395, category: "Breads & Rice", description: "Includes Tandoori Roti, Butter Naan, Missi Roti, Laccha Paratha." },
+            { id: 97, name: "Hakka Noodles (Veg)", price: 495, category: "Breads & Rice", description: "Stir-fried noodles with crisp veggies." },
+            { id: 98, name: "Hakka Noodles (Chicken)", price: 645, category: "Breads & Rice", description: "Stir-fried noodles tossed with chicken and egg." },
+            { id: 99, name: "Biryani (Chicken)", price: 845, category: "Breads & Rice", description: "Basmati rice slow-dum cooked with marinated chicken and saffron." },
+            { id: 100, name: "Fried Rice (Veg)", price: 495, category: "Breads & Rice", description: "Classic Chinese wok-tossed fried rice." },
+
+            // Page 15: Desserts
+            { id: 101, name: "Chocolate Cigar Roll", price: 345, category: "Desserts & Ice Cream", description: "Crispy fried rolls filled with choco brownie served with vanilla ice cream." },
+            { id: 102, name: "Sizzling Brownie", price: 345, category: "Desserts & Ice Cream", description: "Warm chocolate brownie served on a sizzling hot plate with vanilla scoop." },
+            { id: 103, name: "Gulab Jamun Nest Sweet", price: 245, category: "Desserts & Ice Cream", description: "Traditional hot sweet gulab jamuns served in an edible crisp nest." }
         ];
 
-        // Web Audio API ASMR Paper Flip Sound Generator (No external file needed!)
+        // --- ASMR ACOUSTIC ENGINE (PRO ENVIRONMENT SENSORY FLIP) ---
         function playFlipSound() {
             if (!audioEnabled) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Create custom sound using White Noise (paper scratch)
-                const bufferSize = ctx.sampleRate * 0.35; // length of sound in seconds
+                const bufferSize = ctx.sampleRate * 0.45;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
                 
-                // Populate random noise
+                // Procedural white noise friction matrix
                 for (let i = 0; i < bufferSize; i++) {
                     data[i] = Math.random() * 2 - 1;
                 }
-                
-                const noiseNode = ctx.createBufferSource();
-                noiseNode.buffer = buffer;
-                
-                // Filter the noise to resemble the paper friction (rustle)
-                const filter = ctx.createBiquadFilter();
-                filter.type = "bandpass";
-                filter.frequency.setValueAtTime(1400, ctx.currentTime);
-                filter.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.3);
-                filter.Q.setValueAtTime(2.0, ctx.currentTime);
-                
-                // Quick low-pass filter to soften the highs
-                const lpFilter = ctx.createBiquadFilter();
-                lpFilter.type = "lowpass";
-                lpFilter.frequency.setValueAtTime(3000, ctx.currentTime);
-                
-                // Amplitude envelope for the flip motion
-                const gainNode = ctx.createGain();
-                gainNode.gain.setValueAtTime(0, ctx.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05); // quick rub
-                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.32); // release
-                
-                // Connect Nodes
-                noiseNode.connect(filter);
-                filter.connect(lpFilter);
-                lpFilter.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                
-                noiseNode.start();
-                noiseNode.stop(ctx.currentTime + 0.35);
+
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const bandpass = ctx.createBiquadFilter();
+                bandpass.type = "bandpass";
+                bandpass.frequency.setValueAtTime(1400, ctx.currentTime);
+                bandpass.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.4);
+                bandpass.Q.setValueAtTime(3.5, ctx.currentTime);
+
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0, ctx.currentTime);
+                noiseGain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + 0.05);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.42);
+
+                const osc = ctx.createOscillator();
+                const oscGain = ctx.createGain();
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(75, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(240, ctx.currentTime + 0.35);
+
+                oscGain.gain.setValueAtTime(0, ctx.currentTime);
+                oscGain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.1);
+                oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+                noise.connect(bandpass);
+                bandpass.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
+
+                osc.connect(oscGain);
+                oscGain.connect(ctx.destination);
+
+                noise.start();
+                osc.start();
+                noise.stop(ctx.currentTime + 0.45);
+                osc.stop(ctx.currentTime + 0.45);
             } catch (e) {
-                console.log("Audio not allowed by gesture yet: ", e);
+                console.log("Audio require swipe interactions:", e);
             }
         }
 
@@ -290,85 +406,132 @@ HOTEL SAPPHIRE
             const icon = document.getElementById("audio-icon");
             if (audioEnabled) {
                 icon.className = "fa-solid fa-volume-high";
-                showToast("Sound FX Enabled!");
+                showToast("Sensory Audio Enabled!");
                 playFlipSound();
             } else {
                 icon.className = "fa-solid fa-volume-xmark";
-                showToast("Sound FX Muted!");
+                showToast("Sensory Audio Muted!");
             }
         }
 
-        // --- FETCH MENU SYSTEM ---
-        async function loadMenu() {
+        // --- DIRECT GOOGLE SHEETS & SUPABASE CONNECTOR ---
+        async function loadMenuSystem() {
+            const badge = document.getElementById("sync-source-badge");
+            
+            // Try Live Google Sheet Fetch first
             try {
-                // Try fetching from Supabase database
+                const response = await fetch(SHEET_CSV_URL);
+                if (response.ok) {
+                    const csvText = await response.text();
+                    const sheetItems = parseCSV(csvText);
+                    if (sheetItems.length > 0) {
+                        menuItems = sheetItems;
+                        badge.innerHTML = `<span class="text-green-400 font-bold"><i class="fa-solid fa-cloud-arrow-down"></i> Google Sheets Connected (${menuItems.length} Items)</span>`;
+                        renderBook();
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log("Sheets fetch bypass, shifting to Supabase Database...", err);
+            }
+
+            // Try Supabase fetch next
+            try {
                 const response = await fetch(`${SUPABASE_URL}menu_items?select=*`, {
                     headers: {
                         "apikey": SUPABASE_KEY,
                         "Authorization": `Bearer ${SUPABASE_KEY}`
                     }
                 });
-                
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.length > 0) {
                         menuItems = data;
-                        console.log("Supabase menu items loaded successfully:", data.length);
-                    } else {
-                        menuItems = defaultMenu;
-                        console.log("Supabase table empty, falling back to Sapphire Menu");
+                        badge.innerHTML = `<span class="text-yellow-500 font-bold"><i class="fa-solid fa-database"></i> Live Supabase Synchronized (${menuItems.length} Items)</span>`;
+                        renderBook();
+                        return;
                     }
-                } else {
-                    menuItems = defaultMenu;
-                    console.log("Supabase fetch failed (Status " + response.status + "), utilizing Local Premium Menu");
                 }
-            } catch (error) {
-                menuItems = defaultMenu;
-                console.log("Supabase unavailable, using Local Menu:", error);
+            } catch (err) {
+                console.log("Supabase pipeline offline, utilizing fully detailed default catalog", err);
             }
+
+            // Standard fallback using our complete parsed list of items
+            menuItems = defaultMenu;
+            badge.innerHTML = `<span class="text-yellow-600 font-bold"><i class="fa-solid fa-book-open"></i> Full Local Catalog Active (${menuItems.length} Dishes)</span>`;
             renderBook();
         }
 
-        // --- RENDERING BOOK PAGES DYNAMICALLY ---
-        // We will construct pages based on food categories, plus a Front Cover and a dynamic Cart Checkout view.
+        function parseCSV(csvText) {
+            const lines = csvText.split(/\r?\n/);
+            if (lines.length < 2) return [];
+
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, '').toLowerCase());
+            const findIndex = (keys) => headers.findIndex(h => keys.some(k => h.includes(k)));
+
+            const nameIdx = findIndex(['name', 'item', 'food', 'title']);
+            const priceIdx = findIndex(['price', 'rate', 'cost', 'amount']);
+            const catIdx = findIndex(['category', 'type', 'group']);
+            const descIdx = findIndex(['description', 'detail', 'info', 'desc']);
+
+            const list = [];
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const row = [];
+                let insideQuote = false;
+                let field = "";
+                for (let j = 0; j < line.length; j++) {
+                    const c = line[j];
+                    if (c === '"' || c === "'") insideQuote = !insideQuote;
+                    else if (c === ',' && !insideQuote) {
+                        row.push(field.trim().replace(/^["']|["']$/g, ''));
+                        field = "";
+                    } else {
+                        field += c;
+                    }
+                }
+                row.push(field.trim().replace(/^["']|["']$/g, ''));
+
+                const targetName = row[nameIdx === -1 ? 0 : nameIdx];
+                if (!targetName) continue;
+
+                const priceNum = parseFloat(row[priceIdx === -1 ? 1 : priceIdx]);
+
+                list.push({
+                    id: i,
+                    name: targetName,
+                    price: isNaN(priceNum) ? 350 : priceNum,
+                    category: row[catIdx === -1 ? 2 : catIdx] || 'Specialties',
+                    description: row[descIdx === -1 ? 3 : descIdx] || 'The Back Door premium recipe.'
+                });
+            }
+            return list;
+        }
+
+        // --- DYNAMIC BOOK RENDERER ---
         function getPagesStructure() {
-            // Group items by Category
             const categories = {};
             menuItems.forEach(item => {
-                if (!categories[item.category]) {
-                    categories[item.category] = [];
-                }
-                categories[item.category].push(item);
+                const cat = item.category || "General";
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(item);
             });
 
             const pages = [];
+            // Cover Page
+            pages.push({ type: "cover", title: "THE BACK DOOR", subtitle: "HOTEL SAPPHIRE YAMUNANAGAR" });
 
-            // PAGE 1: Luxury Cover Page
-            pages.push({
-                type: "cover",
-                title: "Hotel Sapphire",
-                subtitle: "YAMUNANAGAR",
-                tagline: "Fine Dine & Luxury Experience"
-            });
-
-            // PAGES: Category Sheets
+            // Category Sheets
             Object.keys(categories).forEach(cat => {
-                pages.push({
-                    type: "category",
-                    category: cat,
-                    items: categories[cat]
-                });
+                pages.push({ type: "category", category: cat, items: categories[cat] });
             });
 
-            // FINAL PAGE: Cart Summary & Checkout
-            pages.push({
-                type: "cart"
-            });
-
+            // Cart Checkout Page
+            pages.push({ type: "cart" });
             return pages;
         }
-
-        let totalPagesArray = [];
 
         function renderBook() {
             const bookEl = document.getElementById("book");
@@ -378,82 +541,77 @@ HOTEL SAPPHIRE
             totalPagesArray.forEach((page, index) => {
                 const pageDiv = document.createElement("div");
                 pageDiv.className = `book-page ${index === currentPageIndex ? 'page-active' : 'page-hidden'}`;
-                pageDiv.setAttribute("data-page-index", index);
 
-                let innerContent = "";
-
+                let html = "";
                 if (page.type === "cover") {
-                    innerContent = `
-                        <div class="page-face page-front flex flex-col justify-between p-6 text-center border-4 border-double border-[#d4af3777] m-1 h-[98%] rounded-lg">
-                            <div class="pt-6">
-                                <span class="text-xs tracking-[0.4em] text-gold serif-font">WELCOME TO</span>
-                                <div class="w-16 h-[1px] bg-gold/40 mx-auto my-2"></div>
+                    html = `
+                        <div class="page-face page-front flex flex-col justify-between p-6 text-center border-[3px] border-double border-[#d4af3750] m-1 h-[98%] rounded-xl">
+                            <div class="pt-4">
+                                <span class="text-[10px] tracking-[0.4em] text-gold serif-font font-bold">THE BACK DOOR RESTAURANT</span>
+                                <div class="w-12 h-[1px] bg-gold/30 mx-auto my-1.5"></div>
                             </div>
                             <div class="my-auto flex flex-col items-center">
                                 <i class="fa-solid fa-gem text-gold text-5xl mb-6 animate-pulse"></i>
-                                <h1 class="serif-font text-3xl md:text-4xl font-black text-gold tracking-widest uppercase">HOTEL SAPPHIRE</h1>
-                                <p class="text-xs tracking-[0.2em] text-amber-100/60 mt-1 uppercase">Yamunanagar's Finest Multi-Cuisine</p>
-                                <div class="w-24 h-[1px] bg-gold/50 my-6"></div>
-                                <span class="text-[10px] md:text-xs text-gray-400 italic tracking-wider">A symphony of spice, flavour & elegance</span>
+                                <h1 class="serif-font text-3xl font-black text-gold tracking-widest uppercase">HOTEL SAPPHIRE</h1>
+                                <p class="text-[9px] tracking-[0.2em] text-amber-100/50 mt-1 uppercase">Yamunanagar's Finest Multi-Cuisine Dine</p>
+                                <div class="w-20 h-[1px] bg-gold/40 my-6"></div>
+                                <span class="text-[10px] text-gray-400 italic">Sweep/Swipe to Flip the Fine-Dine Catalog</span>
                             </div>
-                            <div class="pb-6">
-                                <p class="text-xs text-gold/80 flex items-center justify-center space-x-2 animate-bounce">
-                                    <span>Swipe Left to Turn</span> <i class="fa-solid fa-arrow-right"></i>
+                            <div class="pb-4">
+                                <p class="text-[11px] text-gold/80 flex items-center justify-center space-x-2 animate-bounce">
+                                    <span>Swipe Left to Start</span> <i class="fa-solid fa-arrow-right"></i>
                                 </p>
                             </div>
                         </div>
                     `;
                 } else if (page.type === "category") {
                     const itemCards = page.items.map(item => `
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-black/30 border border-gold/10 hover:border-gold/30 transition shadow-inner">
-                            <div class="flex-grow pr-4">
-                                <div class="flex items-center space-x-2">
-                                    <span class="w-2 h-2 rounded-full ${item.category === 'Drinks' || item.category === 'Desserts' ? 'bg-green-500' : 'bg-red-500'}"></span>
-                                    <h4 class="font-bold text-sm md:text-base text-gold">${item.name}</h4>
+                        <div class="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-gold/10 hover:border-gold/30 transition shadow-inner">
+                            <div class="flex-grow pr-3">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="w-2 h-2 rounded-full ${page.category.toLowerCase().includes('non') ? 'bg-red-500' : 'bg-green-500'}"></span>
+                                    <h4 class="font-bold text-xs md:text-sm text-gold">${item.name}</h4>
                                 </div>
-                                <p class="text-[10px] md:text-xs text-gray-400 mt-1 leading-relaxed">${item.description || 'Delectable hotel recipe with premium ingredients.'}</p>
-                                <span class="text-xs font-semibold text-[#f3ede2] block mt-1.5 font-mono">₹ ${item.price}</span>
+                                <p class="text-[9px] md:text-[10px] text-gray-400 mt-1 leading-relaxed line-clamp-2">${item.description || 'Premium recipe selection prepared with luxury ingredients.'}</p>
+                                <span class="text-xs font-semibold text-white block mt-1 font-mono">₹ ${item.price}</span>
                             </div>
-                            <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})" class="flex-shrink-0 bg-gold hover:bg-yellow-500 text-black px-3 py-1.5 rounded-md font-bold text-xs flex items-center space-x-1 transition shadow duration-300">
+                            <button onclick="addToCart(${item.id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})" class="flex-shrink-0 bg-gold hover:bg-yellow-500 text-black px-3 py-1.5 rounded-lg font-bold text-[10px] flex items-center space-x-1 transition shadow duration-300">
                                 <i class="fa-solid fa-plus"></i> <span>ADD</span>
                             </button>
                         </div>
                     `).join("");
 
-                    innerContent = `
+                    html = `
                         <div class="page-face page-front p-4 flex flex-col justify-between h-[99%]">
                             <div>
-                                <div class="text-center pb-2 border-b border-gold/20 mb-3">
-                                    <span class="text-[10px] tracking-widest text-gold/60 uppercase">Hotel Sapphire Selects</span>
-                                    <h2 class="serif-font text-lg md:text-2xl font-bold text-gold uppercase tracking-wider mt-0.5">${page.category}</h2>
+                                <div class="text-center pb-2 border-b border-gold/15 mb-3">
+                                    <span class="text-[9px] tracking-widest text-gold/55 uppercase">The Back Door • Sapphire</span>
+                                    <h2 class="serif-font text-base md:text-xl font-bold text-gold uppercase tracking-wider mt-0.5">${page.category}</h2>
                                 </div>
-                                <div class="space-y-2.5 overflow-y-auto max-h-[380px] custom-scroll pr-1">
+                                <div class="space-y-2 overflow-y-auto max-h-[350px] custom-scroll pr-1">
                                     ${itemCards}
                                 </div>
                             </div>
-                            <div class="pt-2 border-t border-gold/10 flex justify-between items-center text-[10px] text-gold/60 uppercase">
-                                <span>Swipe Left / Right</span>
-                                <span class="font-mono">Sapphire Fine Dine</span>
+                            <div class="pt-2 border-t border-gold/10 flex justify-between items-center text-[9px] text-gold/50 uppercase font-mono">
+                                <span>Swipe Left or Right</span>
+                                <span>Page ${index + 1}</span>
                             </div>
                         </div>
                     `;
                 } else if (page.type === "cart") {
-                    innerContent = `
+                    html = `
                         <div class="page-face page-front p-4 flex flex-col justify-between h-[99%]">
                             <div class="flex flex-col h-full justify-between">
-                                <div class="text-center pb-2 border-b border-gold/20 mb-3">
-                                    <span class="text-[10px] tracking-widest text-gold/60 uppercase">Ready to Dine?</span>
-                                    <h2 class="serif-font text-lg md:text-2xl font-bold text-gold uppercase tracking-wider">YOUR ORDER SUMMARY</h2>
+                                <div class="text-center pb-2 border-b border-gold/15 mb-3">
+                                    <span class="text-[9px] tracking-widest text-gold/55 uppercase">Your Dining Order</span>
+                                    <h2 class="serif-font text-base md:text-xl font-bold text-gold uppercase tracking-wider">ORDER TRAY SUMMARY</h2>
                                 </div>
                                 
-                                <!-- Cart Items Scroll container -->
-                                <div id="cart-items-box" class="flex-grow overflow-y-auto max-h-[220px] custom-scroll space-y-2 pr-1 mb-2">
-                                    <!-- Populated in refreshCartView() -->
-                                    <p class="text-center text-gray-500 text-xs py-10">Your culinary tray is empty. Add delicacies to order.</p>
+                                <div id="cart-items-box" class="flex-grow overflow-y-auto max-h-[190px] custom-scroll space-y-2 pr-1 mb-2">
+                                    <p class="text-center text-gray-500 text-xs py-10">Your tray is currently empty.</p>
                                 </div>
 
-                                <!-- Taxes & Calculations Box -->
-                                <div class="bg-black/40 p-3 rounded-lg border border-gold/20 space-y-1.5 text-xs mb-3 font-mono">
+                                <div class="bg-black/40 p-3 rounded-lg border border-gold/15 space-y-1.5 text-[11px] font-mono">
                                     <div class="flex justify-between text-gray-400">
                                         <span>Subtotal:</span>
                                         <span id="bill-subtotal">₹ 0.00</span>
@@ -466,21 +624,20 @@ HOTEL SAPPHIRE
                                         <span>CGST (5.0%):</span>
                                         <span id="bill-cgst">₹ 0.00</span>
                                     </div>
-                                    <div class="h-[1px] bg-gold/20 my-1"></div>
-                                    <div class="flex justify-between text-gold font-bold text-sm">
-                                        <span class="serif-font uppercase">Grand Total:</span>
+                                    <div class="h-[1px] bg-gold/15 my-1"></div>
+                                    <div class="flex justify-between text-gold font-bold text-xs md:text-sm">
+                                        <span class="serif-font">Total Payable Amount:</span>
                                         <span id="bill-total">₹ 0.00</span>
                                     </div>
                                 </div>
 
-                                <!-- Action Buttons -->
                                 <div class="space-y-2">
-                                    <div class="flex justify-between items-center bg-gold/5 px-3 py-2 rounded border border-gold/20">
-                                        <span class="text-[11px] text-gray-400">Dine Place:</span>
-                                        <span id="display-table" class="text-xs font-bold text-gold cursor-pointer underline" onclick="openTableModal()">SELECT TABLE</span>
+                                    <div class="flex justify-between items-center bg-gold/5 px-3 py-1.5 rounded border border-gold/15">
+                                        <span class="text-[10px] text-gray-400">Dine-In Location:</span>
+                                        <span id="display-table" class="text-[11px] font-bold text-gold cursor-pointer underline" onclick="openTableModal()">SELECT TABLE</span>
                                     </div>
-                                    <button onclick="placeOrder()" id="order-btn" class="w-full bg-gold hover:bg-yellow-500 text-black font-extrabold py-3 rounded-lg tracking-widest text-sm flex items-center justify-center space-x-2 transition shadow duration-300">
-                                        <i class="fa-solid fa-bowl-food"></i>
+                                    <button onclick="placeOrder()" id="order-btn" class="w-full bg-gold hover:bg-yellow-500 text-black font-extrabold py-3 rounded-lg tracking-widest text-xs flex items-center justify-center space-x-2 transition shadow duration-300">
+                                        <i class="fa-solid fa-utensils animate-pulse"></i>
                                         <span>PLACE ORDER TO COUNTER</span>
                                     </button>
                                 </div>
@@ -489,29 +646,21 @@ HOTEL SAPPHIRE
                     `;
                 }
 
-                pageDiv.innerHTML = innerContent;
+                pageDiv.innerHTML = html;
                 bookEl.appendChild(pageDiv);
             });
 
             updatePageDisplay();
         }
 
-        // --- NAVIGATION CONTROLS WITH SOUNDS ---
+        // --- NAVIGATION & SWIPE MATRICES ---
         function updatePageDisplay() {
             const pages = document.querySelectorAll(".book-page");
             pages.forEach((p, idx) => {
-                if (idx === currentPageIndex) {
-                    p.classList.remove("page-hidden");
-                    p.classList.add("page-active");
-                } else {
-                    p.classList.remove("page-active");
-                    p.classList.add("page-hidden");
-                }
+                p.className = `book-page ${idx === currentPageIndex ? 'page-active' : 'page-hidden'}`;
             });
 
             document.getElementById("page-num-indicator").innerText = `PAGE ${currentPageIndex + 1} / ${totalPagesArray.length}`;
-            
-            // Render cart if on checkout page
             if (totalPagesArray[currentPageIndex] && totalPagesArray[currentPageIndex].type === "cart") {
                 refreshCartView();
             }
@@ -522,8 +671,6 @@ HOTEL SAPPHIRE
                 currentPageIndex++;
                 playFlipSound();
                 updatePageDisplay();
-            } else {
-                showToast("You've reached the final page!");
             }
         }
 
@@ -532,8 +679,6 @@ HOTEL SAPPHIRE
                 currentPageIndex--;
                 playFlipSound();
                 updatePageDisplay();
-            } else {
-                showToast("You are on the cover page!");
             }
         }
 
@@ -546,111 +691,87 @@ HOTEL SAPPHIRE
             }
         }
 
-        // --- TOUCH SWIPE HANDLERS (No scroll, flip-focused) ---
+        // TOUCH GESTURES (SWIPE NEXT / PREVIOUS)
         let touchStartX = 0;
         let touchEndX = 0;
-
-        document.addEventListener("touchstart", (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        document.addEventListener("touchend", (e) => {
+        document.addEventListener("touchstart", e => touchStartX = e.changedTouches[0].screenX, { passive: true });
+        document.addEventListener("touchend", e => {
             touchEndX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
+            const dist = touchStartX - touchEndX;
+            // Left swipe (next page), Right swipe (prev page)
+            if (dist > 50) nextPage();
+            else if (dist < -50) prevPage();
         }, { passive: true });
-
-        function handleSwipeGesture() {
-            const threshold = 60; // Minimum distance swipe in pixels
-            if (touchStartX - touchEndX > threshold) {
-                // Swiped Left to Right -> Next Page
-                nextPage();
-            } else if (touchEndX - touchStartX > threshold) {
-                // Swiped Right to Left -> Previous Page
-                prevPage();
-            }
-        }
 
         function dismissHint() {
             document.getElementById("swipe-hint").style.opacity = "0";
-            setTimeout(() => {
-                document.getElementById("swipe-hint").style.display = "none";
-            }, 500);
+            setTimeout(() => document.getElementById("swipe-hint").style.display = "none", 500);
             playFlipSound();
         }
 
-        // --- CART OPERATIONS ---
-        function addToCart(itemId, name, price) {
-            const existing = cart.find(item => item.id === itemId);
+        // --- ORDER ENGINE OPERATIONS ---
+        function addToCart(id, name, price) {
+            const existing = cart.find(item => item.id === id);
             if (existing) {
-                existing.quantity += 1;
+                existing.quantity++;
             } else {
-                cart.push({ id: itemId, name: name, price: price, quantity: 1 });
+                cart.push({ id, name, price, quantity: 1 });
             }
             updateCartCounter();
-            showToast(`${name} added to Tray!`);
+            showToast(`${name} added!`);
             playFlipSound();
         }
 
         function updateCartCounter() {
-            const totalCount = cart.reduce((acc, curr) => acc + curr.quantity, 0);
-            document.getElementById("cart-count").innerText = totalCount;
+            const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById("cart-count").innerText = total;
         }
 
-        function removeFromCart(itemId) {
-            cart = cart.filter(item => item.id !== itemId);
-            updateCartCounter();
-            refreshCartView();
-            showToast("Item removed.");
-        }
-
-        function changeQuantity(itemId, delta) {
-            const item = cart.find(i => i.id === itemId);
+        function changeQuantity(id, delta) {
+            const item = cart.find(i => i.id === id);
             if (item) {
                 item.quantity += delta;
                 if (item.quantity <= 0) {
-                    removeFromCart(itemId);
-                } else {
-                    updateCartCounter();
-                    refreshCartView();
+                    cart = cart.filter(i => i.id !== id);
+                    showToast("Removed from Tray.");
                 }
+                updateCartCounter();
+                refreshCartView();
             }
         }
 
         function refreshCartView() {
-            const cartBox = document.getElementById("cart-items-box");
-            if (!cartBox) return;
+            const box = document.getElementById("cart-items-box");
+            if (!box) return;
 
             if (cart.length === 0) {
-                cartBox.innerHTML = `<p class="text-center text-gray-500 text-xs py-10">Your culinary tray is empty. Add delicacies from pages.</p>`;
+                box.innerHTML = `<p class="text-center text-gray-500 text-xs py-10">Your tray is empty.</p>`;
                 updateCalculations(0);
                 return;
             }
 
-            let html = "";
             let subtotal = 0;
-
-            cart.forEach(item => {
-                const totalItemPrice = item.price * item.quantity;
-                subtotal += totalItemPrice;
-                html += `
-                    <div class="flex items-center justify-between p-2 rounded bg-black/40 border border-gold/10 text-xs">
+            box.innerHTML = cart.map(item => {
+                const totalItem = item.price * item.quantity;
+                subtotal += totalItem;
+                return `
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-black/30 border border-gold/10 text-xs">
                         <div class="flex-grow">
                             <span class="font-semibold text-white">${item.name}</span>
-                            <div class="text-[10px] text-gray-400 mt-0.5">₹ ${item.price} each</div>
+                            <div class="text-[9px] text-gray-400 mt-0.5">₹ ${item.price} each</div>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <div class="flex items-center space-x-1 border border-gold/30 rounded px-1.5 py-0.5 bg-black/20">
-                                <button onclick="changeQuantity(${item.id}, -1)" class="text-gold font-bold px-1 hover:text-white">-</button>
-                                <span class="font-mono text-white px-1 text-xs">${item.quantity}</span>
-                                <button onclick="changeQuantity(${item.id}, 1)" class="text-gold font-bold px-1 hover:text-white">+</button>
+                        <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-1 border border-gold/25 rounded px-1.5 py-0.5 bg-black/20">
+                                <button onclick="changeQuantity(${item.id}, -1)" class="text-gold font-bold px-1 text-xs">-</button>
+                                <span class="font-mono text-white text-xs">${item.quantity}</span>
+                                <button onclick="changeQuantity(${item.id}, 1)" class="text-gold font-bold px-1 text-xs">+</button>
                             </div>
-                            <span class="font-mono font-bold text-gold min-w-[50px] text-right">₹ ${totalItemPrice}</span>
+                            <span class="font-mono text-gold font-bold min-w-[50px] text-right">₹ ${totalItem}</span>
                         </div>
                     </div>
                 `;
-            });
+            }).join("");
 
-            cartBox.innerHTML = html;
             updateCalculations(subtotal);
         }
 
@@ -665,7 +786,7 @@ HOTEL SAPPHIRE
             document.getElementById("bill-total").innerText = `₹ ${grandTotal.toFixed(2)}`;
         }
 
-        // --- TABLE MANAGEMENT ---
+        // --- TABLE CONTROLS ---
         function openTableModal() {
             document.getElementById("table-modal").classList.remove("hidden");
         }
@@ -673,34 +794,30 @@ HOTEL SAPPHIRE
         function selectTable(num) {
             selectedTable = `Table ${num}`;
             document.querySelectorAll(".table-btn").forEach(btn => {
-                btn.classList.remove("bg-gold", "text-black");
-                if (btn.innerText === `T-${num}`) {
-                    btn.classList.add("bg-gold", "text-black");
-                }
+                btn.className = "table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs";
+                if (btn.innerText === `T-${num}`) btn.className = "table-btn p-3 rounded border-2 border-gold bg-gold text-black font-bold text-xs";
             });
             document.getElementById("custom-table").value = "";
         }
 
         function saveTableSelection() {
-            const customVal = document.getElementById("custom-table").value.trim();
-            if (customVal) {
-                selectedTable = customVal;
-            }
+            const custom = document.getElementById("custom-table").value.trim();
+            if (custom) selectedTable = custom;
 
             if (!selectedTable) {
-                showToast("Please select a table or cabin number.");
+                showToast("Please choose a location!");
                 return;
             }
 
             document.getElementById("display-table").innerText = selectedTable.toUpperCase();
             document.getElementById("table-modal").classList.add("hidden");
-            showToast(`Table confirmed: ${selectedTable}`);
+            showToast(`Confirmed Location: ${selectedTable}`);
         }
 
-        // --- ORDER SUBMISSION ---
+        // --- ORDER PIPELINE TO COUNTER PANEL ---
         async function placeOrder() {
             if (cart.length === 0) {
-                showToast("Your cart is empty!");
+                showToast("Your tray is empty!");
                 return;
             }
 
@@ -709,24 +826,24 @@ HOTEL SAPPHIRE
                 return;
             }
 
-            const subtotal = cart.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0);
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const sgst = parseFloat((subtotal * 0.05).toFixed(2));
             const cgst = parseFloat((subtotal * 0.05).toFixed(2));
             const grandTotal = parseFloat((subtotal + sgst + cgst).toFixed(2));
 
-            const orderPayload = {
+            const order = {
                 table_number: selectedTable,
                 items: JSON.stringify(cart),
-                subtotal: subtotal,
-                sgst: sgst,
-                cgst: cgst,
+                subtotal,
+                sgst,
+                cgst,
                 grand_total: grandTotal,
                 status: "Pending"
             };
 
-            const orderButton = document.getElementById("order-btn");
-            orderButton.disabled = true;
-            orderButton.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>SENDING ORDER...</span>`;
+            const btn = document.getElementById("order-btn");
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>PRINTING BILL TO COUNTER...</span>`;
 
             try {
                 const response = await fetch(`${SUPABASE_URL}orders`, {
@@ -734,77 +851,53 @@ HOTEL SAPPHIRE
                     headers: {
                         "Content-Type": "application/json",
                         "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`,
-                        "Prefer": "return=representation"
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
                     },
-                    body: JSON.stringify(orderPayload)
+                    body: JSON.stringify(order)
                 });
 
                 if (response.ok) {
-                    showToast("🌟 HURRAY! Order sent to Chef kitchen!");
+                    showToast("🌟 Order received at the counter!");
                     cart = [];
                     updateCartCounter();
                     refreshCartView();
-                    
-                    // Trigger dynamic completion screen view inside cart box
-                    const cartBox = document.getElementById("cart-items-box");
-                    if (cartBox) {
-                        cartBox.innerHTML = `
-                            <div class="text-center py-6 text-green-400">
-                                <i class="fa-solid fa-circle-check text-4xl mb-2 animate-bounce"></i>
-                                <h3 class="serif-font font-bold text-sm">Order Dispatched!</h3>
-                                <p class="text-[10px] text-gray-400 mt-1">Our counter is printing your bill.</p>
-                            </div>
-                        `;
-                    }
+                    document.getElementById("cart-items-box").innerHTML = `
+                        <div class="text-center py-8 text-green-400 flex flex-col items-center">
+                            <i class="fa-solid fa-circle-check text-4xl mb-2 animate-bounce"></i>
+                            <h3 class="serif-font font-bold">Tray Dispatched!</h3>
+                            <p class="text-[10px] text-gray-400 mt-1">Please wait while we prepare your gourmet delicacies.</p>
+                        </div>
+                    `;
                 } else {
-                    console.error("Order insertion failed Status:", response.status);
-                    // Local Storage Fallback if database table schema doesn't exist
-                    let fallbackOrders = JSON.parse(localStorage.getItem("sapphire_fallback_orders") || "[]");
-                    fallbackOrders.push({ ...orderPayload, id: Date.now(), created_at: new Date() });
-                    localStorage.setItem("sapphire_fallback_orders", JSON.stringify(fallbackOrders));
-                    
-                    showToast("Order Placed Offline! (Saved Locally)");
-                    cart = [];
-                    updateCartCounter();
-                    refreshCartView();
+                    throw new Error("Supabase insert error");
                 }
-            } catch (error) {
-                console.error("Connectivity issue placing order: ", error);
-                // Fallback locally
-                let fallbackOrders = JSON.parse(localStorage.getItem("sapphire_fallback_orders") || "[]");
-                fallbackOrders.push({ ...orderPayload, id: Date.now(), created_at: new Date() });
-                localStorage.setItem("sapphire_fallback_orders", JSON.stringify(fallbackOrders));
+            } catch (err) {
+                let offline = JSON.parse(localStorage.getItem("sapphire_fallback_orders") || "[]");
+                offline.push({ ...order, id: Date.now(), created_at: new Date() });
+                localStorage.setItem("sapphire_fallback_orders", JSON.stringify(offline));
                 
-                showToast("Order placed locally. Counter will synchronize!");
+                showToast("Internet offline. Order queued locally!");
                 cart = [];
                 updateCartCounter();
                 refreshCartView();
             } finally {
-                orderButton.disabled = false;
-                orderButton.innerHTML = `<i class="fa-solid fa-bowl-food"></i> <span>PLACE ORDER TO COUNTER</span>`;
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-utensils"></i> <span>PLACE ORDER TO COUNTER</span>`;
             }
         }
 
-        // --- TOAST NOTIFICATIONS ---
         function showToast(msg) {
             const toast = document.getElementById("toast");
             document.getElementById("toast-message").innerText = msg;
             toast.style.transform = "translateY(0)";
-            setTimeout(() => {
-                toast.style.transform = "translateY(-150%)";
-            }, 3000);
+            setTimeout(() => toast.style.transform = "translateY(-150%)", 3000);
         }
 
-        // Initialize Window
         window.onload = function() {
-            loadMenu();
-            // Try to auto dismiss hint on mouse clicks or general touch interaction
-            document.body.addEventListener('click', function() {
+            loadMenuSystem();
+            document.body.addEventListener('click', () => {
                 const hint = document.getElementById("swipe-hint");
-                if (hint && hint.style.display !== "none") {
-                    dismissHint();
-                }
+                if (hint && hint.style.display !== "none") dismissHint();
             }, { once: true });
         }
     </script>

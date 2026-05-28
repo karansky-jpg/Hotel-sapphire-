@@ -178,6 +178,8 @@
                 <button onclick="selectTable(6)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-6</button>
                 <button onclick="selectTable(7)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-7</button>
                 <button onclick="selectTable(8)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-8</button>
+                <button onclick="selectTable(9)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-9</button>
+                <button onclick="selectTable(10)" class="table-btn p-3 rounded border border-gold/15 hover:bg-gold hover:text-black font-bold transition text-xs">T-10</button>
             </div>
             
             <div class="flex flex-col space-y-2">
@@ -439,8 +441,7 @@
             try {
                 const response = await fetch(`${SUPABASE_URL}menu_items?select=*`, {
                     headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                        "apikey": SUPABASE_KEY
                     }
                 });
                 if (response.ok) {
@@ -850,8 +851,7 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                        "apikey": SUPABASE_KEY
                     },
                     body: JSON.stringify(order)
                 });

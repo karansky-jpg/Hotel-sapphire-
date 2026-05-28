@@ -615,7 +615,7 @@
         }
 
         async function deleteOrder(orderId) {
-            if (!confirm("Kya aap is order ko history se hamesha ke liye delete karna chahte hain?")) return;
+            if (!confirm("Are you sure you want to permanently delete this order from history?")) return;
             
             try {
                 const response = await fetch(`${SUPABASE_URL}orders?id=eq.${orderId}`, {
@@ -626,7 +626,7 @@
                 });
                 
                 if (response.ok) {
-                    showToast("Order history se permanently remove kar diya gaya.");
+                    showToast("Order permanently removed from history.");
                     if (selectedOrder && selectedOrder.id === orderId) {
                         selectedOrder = null;
                         document.getElementById("rec-id").innerText = "PENDING";
@@ -638,11 +638,11 @@
                     }
                     fetchOrders();
                 } else {
-                    showToast("Delete karne mein दिक्कत आयी।");
+                    showToast("Failed to delete the order from database.");
                 }
             } catch (err) {
                 console.error("Delete Error:", err);
-                showToast("Network Error: Delete nahi ho paya.");
+                showToast("Network Error: Unable to delete.");
             }
         }
 
@@ -674,7 +674,7 @@
                         headers: {
                             "Content-Type": "application/json",
                             "apikey": SUPABASE_KEY
-                        },
+                    },
                         body: JSON.stringify(payload)
                     });
                     if (response.ok) showToast("Saved to catalog!");

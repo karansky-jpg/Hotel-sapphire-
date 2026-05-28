@@ -511,7 +511,11 @@
                                 <button onclick="markCompleted(${order.id})" class="bg-green-600 hover:bg-green-500 text-white px-2 py-1 rounded text-[10px] flex items-center space-x-1">
                                     <i class="fa-solid fa-check"></i> <span>Served</span>
                                 </button>
-                                ` : ''}
+                                ` : `
+                                <button onclick="deleteOrder(${order.id})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-[10px] flex items-center space-x-1">
+                                    <i class="fa-solid fa-trash"></i> <span>Delete</span>
+                                </button>
+                                `}
                             </div>
                         </div>
                     </div>
@@ -607,6 +611,38 @@
                 localStorage.setItem("sapphire_fallback_orders", JSON.stringify(offline));
                 showToast("Fulfill complete (Offline Mode)");
                 fallbackOrders();
+            }
+        }
+
+        async function deleteOrder(orderId) {
+            if (!confirm("Kya aap is order ko history se hamesha ke liye delete karna chahte hain?")) return;
+            
+            try {
+                const response = await fetch(`${SUPABASE_URL}orders?id=eq.${orderId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "apikey": SUPABASE_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    showToast("Order history se permanently remove kar diya gaya.");
+                    if (selectedOrder && selectedOrder.id === orderId) {
+                        selectedOrder = null;
+                        document.getElementById("rec-id").innerText = "PENDING";
+                        document.getElementById("rec-items-box").innerHTML = `<div class="text-center italic text-gray-500 py-10">Select an order card to render invoice printable receipt.</div>`;
+                        document.getElementById("rec-subtotal").innerText = "₹ 0.00";
+                        document.getElementById("rec-sgst").innerText = "₹ 0.00";
+                        document.getElementById("rec-cgst").innerText = "₹ 0.00";
+                        document.getElementById("rec-grand").innerText = "₹ 0.00";
+                    }
+                    fetchOrders();
+                } else {
+                    showToast("Delete karne mein दिक्कत आयी।");
+                }
+            } catch (err) {
+                console.error("Delete Error:", err);
+                showToast("Network Error: Delete nahi ho paya.");
             }
         }
 
